@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-import com.kauailabs.navx.ftc.AHRS;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,60 +8,71 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class Robot{
 
-    // Hardware Map to store all our electrical component objects
+    //HardwareMap of whole Robot
     private HardwareMap hm;
 
-    //Drive Motors
-    private DcMotor leftFront, leftBack, rightFront, rightBack;
+    //Enum for robot state
+    public enum State{DISABLED, AUTONOMOUS, TELEOP};
 
-    //Navx micro gyro
-    private AHRS gyro;
+    //Current state of Robot, starts out as Disabled
+    State state = State.DISABLED;
 
     //ElapsedTime object for updating loop
     private ElapsedTime period  = new ElapsedTime();
 
-    //Device Interface Board
-    private DeviceInterfaceModule dim;
+    //DriveTrain
+    private DriveTrain drive;
 
-    //I2C port on Device Interface Module for the navx micro gyro
-    private final int GYRO_I2C_Port = 0;
+    //SensorBase
+    private SensorBase sensorBase;
 
-    //Constructor
-    public Robot(){
-
+    /**
+     * Robot()
+     * @param hm Instance of the HardwareMap
+     * @param drive Instance of the DriveTrain
+     * @param sensorBase Instance of the SensorBase
+     * @param key Key for what mode the robot should run in
+     */
+    public Robot(HardwareMap hm, DriveTrain drive, SensorBase sensorBase, String key){
+        this.drive=drive;
+        this.sensorBase=sensorBase;
+        if (key == "autonomous"){
+            autonomousInit(hm);
+        }
+        if (key == "teleop"){
+            teleopInit(hm);
+        }
     }
 
-    public void teleop_init(HardwareMap hm){
-        //initialize the hardware map
-        this.hm = hm;
-
-        //initialize the motors
-        leftFront = hm.dcMotor.get("leftFront");
-        leftBack = hm.dcMotor.get("leftBack");
-        rightFront = hm.dcMotor.get("rightFront");
-        rightBack = hm.dcMotor.get("rightBack");
-
-        //set motor directions
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
-
-        //set motor mode
-        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        //initialize device interface module
-        dim = hm.deviceInterfaceModule.get("Sensor Board");
-        //initialize navx gyro
-        gyro = AHRS.getInstance(dim, GYRO_I2C_Port, AHRS.DeviceDataType.kProcessedData);
+    /**
+     * autonomousInit()
+     * Initializes robot for autonomous mode
+     * @param hm HardwareMap of the Robot
+     */
+    public void autonomousInit(HardwareMap hm){
+        state = State.AUTONOMOUS;
+        drive = new DriveTrain(hm, state);
+        sensorBase = new SensorBase(hm);
+        sensorBase.resetSensors();
     }
 
-    public double getAngle(){
-        return gyro.getRawGyroX();
+    /**
+     * teleopInit()
+     * Initializes robot for teleop mode
+     * @param hm HardwareMap of the Robot
+     */
+    public void teleopInit(HardwareMap hm){
+        state = State.TELEOP;
+        drive = new DriveTrain(hm, state);
+        sensorBase = new SensorBase(hm);
+        sensorBase.resetSensors();
     }
+
+    /**
+     * waitForTick()
+     * @param periodMs period in milliseconds of the control loop
+     * @throws InterruptedException
+     */
     public void waitForTick(long periodMs)  throws InterruptedException {
         long  remaining = periodMs - (long)period.milliseconds();
         // sleep for the remaining portion of the regular cycle period.
