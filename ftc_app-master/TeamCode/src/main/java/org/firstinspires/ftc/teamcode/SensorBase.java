@@ -13,21 +13,28 @@ public class SensorBase {
     private DeviceInterfaceModule dim;
 
     //Navx micro gyro
-    private AHRS gyro;
-
-    //I2C port on Device Interface Module for the navx micro gyro
-    private final int GYRO_I2C_Port = 0;
+    protected AHRS gyro;
 
     /**
      * SensorBase()
+     * Empty Constructor
+     */
+    public SensorBase(){
+
+    }
+
+    /**
+     * init_SensorBase()
+     * Initializes the whole SensorBase, including all the sensors
      * @param hm Instance of the HardwareMap of the Robot
      */
-    public SensorBase(HardwareMap hm){
+    public void init_SensorBase(HardwareMap hm){
         //initialize device interface module
         dim = hm.deviceInterfaceModule.get("Sensor Board");
 
         //initialize navx gyro
-        gyro = AHRS.getInstance(dim, GYRO_I2C_Port, AHRS.DeviceDataType.kProcessedData);
+        gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
+
     }
 
     /**
@@ -41,10 +48,10 @@ public class SensorBase {
     /**
      * getAngle()
      * This method returns the current angle of the robot
-     * @return angle
+     * @return angle current angle from the gyro
      */
     public double getAngle(){
-        return gyro.getRawGyroX();
+        return gyro.getYaw();
     }
 
     /**
@@ -53,5 +60,14 @@ public class SensorBase {
      */
     public void resetGyro(){
         gyro.zeroYaw();
+    }
+
+    /**
+     * gyroIsConnected()
+     * checks if the gyro is connected to the device interface module
+     * @return gyro isConnected
+     */
+    public boolean gyroIsConnected(){
+        return gyro.isConnected();
     }
 }

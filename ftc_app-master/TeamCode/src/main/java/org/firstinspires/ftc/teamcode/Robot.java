@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * Created by Team 2891 on 9/16/2016.
  */
@@ -28,48 +27,63 @@ public class Robot{
 
     /**
      * Robot()
-     * @param hm Instance of the HardwareMap
-     * @param drive Instance of the DriveTrain
-     * @param sensorBase Instance of the SensorBase
-     * @param key Key for what mode the robot should run in
+     * Empty Constructor
      */
-    public Robot(HardwareMap hm, DriveTrain drive, SensorBase sensorBase, String key){
+    public Robot(){
+
+    }
+
+    /**
+     * robotInit()
+     * Initializes the entire robot for either autonomous or teleop, including all the subsystems
+     * @param hm Instance of the HardwareMap of the robot
+     * @param drive Instance of the DriveTrain of the robot
+     * @param sensorBase Instance of the SensorBase of the robot
+     * @param key Key to indicate what mode the robot should run
+     */
+    public void robotInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase, String key){
         this.drive=drive;
         this.sensorBase=sensorBase;
-        if (key == "autonomous"){
-            autonomousInit(hm);
+        this.hm=hm;
+        if (key.equals("autonomous")){
+            autonomousInit(hm,drive,sensorBase);
         }
-        if (key == "teleop"){
-            teleopInit(hm);
+        if (key.equals("teleop")){
+            teleopInit(hm,drive,sensorBase);
         }
     }
 
     /**
      * autonomousInit()
      * Initializes robot for autonomous mode
-     * @param hm HardwareMap of the Robot
+     * @param hm Instance of the HardwareMap of the Robot
+     * @param drive Instance of the DriveTrain of the Robot
+     * @param sensorBase Instance of the SensorBase of the Robot
      */
-    public void autonomousInit(HardwareMap hm){
+    public void autonomousInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase){
         state = State.AUTONOMOUS;
-        drive = new DriveTrain(hm, state);
-        sensorBase = new SensorBase(hm);
+        drive.init_Drive(hm,state);
+        sensorBase.init_SensorBase(hm);
         sensorBase.resetSensors();
     }
 
     /**
      * teleopInit()
      * Initializes robot for teleop mode
-     * @param hm HardwareMap of the Robot
+     * @param hm Instance of the HardwareMap of the Robot
+     * @param drive Instance of the DriveTrain of the Robot
+     * @param sensorBase Instance of the SensorBase of the Robot
      */
-    public void teleopInit(HardwareMap hm){
+    public void teleopInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase){
         state = State.TELEOP;
-        drive = new DriveTrain(hm, state);
-        sensorBase = new SensorBase(hm);
+        drive.init_Drive(hm,state);
+        sensorBase.init_SensorBase(hm);
         sensorBase.resetSensors();
     }
 
     /**
      * waitForTick()
+     * Waits until the next control loop tick starts
      * @param periodMs period in milliseconds of the control loop
      * @throws InterruptedException
      */

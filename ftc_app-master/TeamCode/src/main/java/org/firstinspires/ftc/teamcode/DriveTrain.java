@@ -9,22 +9,33 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class DriveTrain {
 
     // Hardware Map to store all our electrical component objects
-    private HardwareMap hm;
+    private HardwareMap hm = null;
 
     //Drive Motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
 
     /**
      * DriveTrain()
-     * @param hm Instance of the HardwareMap of the Robot
-     * @param state State of the robot
+     * Empty Constructor
      */
-    public DriveTrain(HardwareMap hm, Robot.State state){
+    public DriveTrain(){
+
+    }
+
+    /**
+     * init_Drive()
+     * Initializes the whole drivetrain, including all the motors
+     * @param hm Instance of the HardwareMap of the Robot
+     * @param state State to initialize Robot in
+     */
+    public void init_Drive(HardwareMap hm, Robot.State state){
         //Choose what motor mode to run in: Encoder or No Encoder
         DcMotor.RunMode mode;
 
-        if (state == Robot.State.AUTONOMOUS) {
+        if (state.equals(Robot.State.AUTONOMOUS)) {
+
             mode = DcMotor.RunMode.RUN_USING_ENCODER;
+
         }
         else {
             mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
@@ -34,17 +45,16 @@ public class DriveTrain {
         this.hm = hm;
 
         //initialize the motors
-        leftFront = hm.dcMotor.get("leftFront");
-        leftBack = hm.dcMotor.get("leftBack");
-        rightFront = hm.dcMotor.get("rightFront");
-        rightBack = hm.dcMotor.get("rightBack");
+        leftFront = this.hm.dcMotor.get("leftFront");
+        leftBack = this.hm.dcMotor.get("leftBack");
+        rightFront = this.hm.dcMotor.get("rightFront");
+        rightBack = this.hm.dcMotor.get("rightBack");
 
         //set motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-
         //set motor mode
         leftFront.setMode(mode);
         leftBack.setMode(mode);
@@ -60,6 +70,7 @@ public class DriveTrain {
 
     /**
      * runLeft()
+     * Runs the left DriveTrain motors
      * @param speed speed to run the left drive motors
      */
     public void runLeft(double speed){
@@ -69,6 +80,7 @@ public class DriveTrain {
 
     /**
      * runRight()
+     * Runs the right DriveTrain motors
      * @param speed speed to run the right drive motors
      */
     public void runRight(double speed){
@@ -78,6 +90,7 @@ public class DriveTrain {
 
     /**
      * tankDrive()
+     * TankDrive method for controlling the robot
      * @param left left drivetrain output
      * @param right right drivetrain output
      */
