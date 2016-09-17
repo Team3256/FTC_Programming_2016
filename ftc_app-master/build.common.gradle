@@ -96,7 +96,7 @@ android {
 
 repositories {
     flatDir {
-        dirs '../libs'
+        dirs '../libs', 'C:\\Team2891\\Robot\\navx-micro\\android\\libs'
     }
 }
 
