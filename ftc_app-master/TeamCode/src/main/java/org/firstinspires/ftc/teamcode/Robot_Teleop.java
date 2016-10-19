@@ -12,13 +12,14 @@ public class Robot_Teleop extends LinearOpMode{
 
     //Create subsytem objects
     private DriveTrain drive = new DriveTrain();
-    private SensorBase sensorBase = new SensorBase();
+    private Intake intake = new Intake();
 
     //Create robot object
     private Robot robot = new Robot();
 
     //doubles for joystick values
     double left1 = 0, right1 = 0;
+    boolean intake_button = false, outtake_button = false;
 
     /**
      * runOpMode()
@@ -31,16 +32,21 @@ public class Robot_Teleop extends LinearOpMode{
         super.waitForStart();
 
         //Initializes the robot and its subsystems
-        robot.robotInit(super.hardwareMap, drive, sensorBase, "teleop");
+        robot.robotInit(super.hardwareMap, drive, intake, "teleop");
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
-            right1 = -gamepad1.right_stick_y;
-            drive.tankDrive(left1, right1);
-            telemetry.addData("gyro", sensorBase.getAngle());
-            telemetry.addData("Connected", sensorBase.gyroIsConnected());
-            telemetry.update();
+            right1 = -gamepad1.right_stick_x;
+            intake_button = gamepad1.right_bumper;
+            outtake_button = gamepad1.left_bumper;
+            drive.arcadeDrive(left1, right1);
+            intake.runIntake(intake_button,1);
+            //intake.runIntake(outtake_button,-1);
+            //telemetry.addData("gyro", sensorBase.getAngle());
+            //telemetry.addData("Connected", sensorBase.gyroIsConnected());
+            //telemetry.update();
+
             //Wait for the next tick before looping again
             robot.waitForTick(40);
             //Stops the opMode if it is stopped in any way

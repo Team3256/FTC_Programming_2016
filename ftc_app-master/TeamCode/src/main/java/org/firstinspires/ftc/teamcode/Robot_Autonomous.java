@@ -14,13 +14,14 @@ public class Robot_Autonomous extends LinearOpMode{
 
     private DriveTrain drive = new DriveTrain();
     private SensorBase sensorBase = new SensorBase();
+    private Intake intake = new Intake();
 
     private Robot robot = new Robot();
 
     navXPIDController turnController;
 
     public void runOpMode() throws InterruptedException {
-        robot.robotInit(super.hardwareMap, drive, sensorBase, "autonomous");
+        robot.robotInit(super.hardwareMap, drive,intake, "autonomous");
         turnController = new navXPIDController(sensorBase.gyro,navXPIDController.navXTimestampedDataSource.YAW);
         turnController.setSetpoint(Constants.AUTO_STATE1_TURN_DEGREES);
         turnController.setContinuous(true);

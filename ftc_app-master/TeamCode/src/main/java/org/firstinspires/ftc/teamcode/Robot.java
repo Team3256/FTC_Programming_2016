@@ -22,8 +22,8 @@ public class Robot{
     //DriveTrain
     private DriveTrain drive;
 
-    //SensorBase
-    private SensorBase sensorBase;
+    //Intake
+    private Intake intake;
 
     /**
      * Robot()
@@ -38,18 +38,17 @@ public class Robot{
      * Initializes the entire robot for either autonomous or teleop, including all the subsystems
      * @param hm Instance of the HardwareMap of the robot
      * @param drive Instance of the DriveTrain of the robot
-     * @param sensorBase Instance of the SensorBase of the robot
      * @param key Key to indicate what mode the robot should run
      */
-    public void robotInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase, String key){
+    public void robotInit(HardwareMap hm, DriveTrain drive, Intake intake, String key){
         this.drive=drive;
-        this.sensorBase=sensorBase;
+        this.intake = intake;
         this.hm=hm;
         if (key.equals("autonomous")){
-            autonomousInit(hm,drive,sensorBase);
+            autonomousInit(hm,drive,intake);
         }
         if (key.equals("teleop")){
-            teleopInit(hm,drive,sensorBase);
+            teleopInit(hm,drive,intake);
         }
     }
 
@@ -58,13 +57,13 @@ public class Robot{
      * Initializes robot for autonomous mode
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
-     * @param sensorBase Instance of the SensorBase of the Robot
      */
-    public void autonomousInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase){
+    public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake){
         state = State.AUTONOMOUS;
         drive.init_Drive(hm,state);
-        sensorBase.init_SensorBase(hm);
-        sensorBase.resetSensors();
+        //sensorBase.init_SensorBase(hm);
+        intake.init_Intake(hm);
+        //sensorBase.resetSensors();
     }
 
     /**
@@ -72,13 +71,13 @@ public class Robot{
      * Initializes robot for teleop mode
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
-     * @param sensorBase Instance of the SensorBase of the Robot
      */
-    public void teleopInit(HardwareMap hm, DriveTrain drive, SensorBase sensorBase){
+    public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake){
         state = State.TELEOP;
         drive.init_Drive(hm,state);
-        sensorBase.init_SensorBase(hm);
-        sensorBase.resetSensors();
+        //sensorBase.init_SensorBase(hm);
+        intake.init_Intake(hm);
+        //sensorBase.resetSensors();
     }
 
     /**

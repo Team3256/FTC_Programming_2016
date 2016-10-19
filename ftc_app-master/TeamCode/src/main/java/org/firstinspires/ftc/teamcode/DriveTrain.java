@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by Eric on 9/16/2016.
@@ -51,10 +53,10 @@ public class DriveTrain {
         rightBack = this.hm.dcMotor.get("rightBack");
 
         //set motor directions
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
         //set motor mode
         leftFront.setMode(mode);
         leftBack.setMode(mode);
@@ -95,6 +97,15 @@ public class DriveTrain {
      * @param right right drivetrain output
      */
     public void tankDrive(double left, double right){
+        runLeft(left);
+        runRight(right);
+    }
+
+    public void arcadeDrive(double throttle, double turn){
+        throttle = Range.clip(throttle,-1,1);
+        turn = Range.clip(turn,-1,1);
+        double left = throttle - turn;
+        double right = throttle + turn;
         runLeft(left);
         runRight(right);
     }
