@@ -13,6 +13,7 @@ public class Robot_Teleop extends LinearOpMode{
     //Create subsytem objects
     private DriveTrain drive = new DriveTrain();
     private Intake intake = new Intake();
+    private SensorBase sensorBase = new SensorBase();
 
     //Create robot object
     private Robot robot = new Robot();
@@ -32,21 +33,30 @@ public class Robot_Teleop extends LinearOpMode{
         super.waitForStart();
 
         //Initializes the robot and its subsystems
-        robot.robotInit(super.hardwareMap, drive, intake, "teleop");
+        robot.robotInit(super.hardwareMap, drive, intake, sensorBase,"teleop");
 
+        sensorBase.disableLED();
+        sensorBase.enableLED();
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
-            right1 = -gamepad1.right_stick_x;
+            right1 = -gamepad1 .right_stick_x;
             intake_button = gamepad1.right_bumper;
             outtake_button = gamepad1.left_bumper;
-            drive.arcadeDrive(left1, right1);
-            intake.runIntake(intake_button,1);
+            //drive.arcadeDrive(left1, right1);
+            //intake.runIntake(intake_button,1);
             //intake.runIntake(outtake_button,-1);
             //telemetry.addData("gyro", sensorBase.getAngle());
             //telemetry.addData("Connected", sensorBase.gyroIsConnected());
             //telemetry.update();
-
+            //sensorBase.disableLED();
+            telemetry.addData("BLUE_VAL", sensorBase.getBlue());
+            telemetry.addData("RED_VAL", sensorBase.getRed());
+            telemetry.addData("IS_BLUE", sensorBase.isBlue());
+            telemetry.addData("IS_RED", sensorBase.isRed());
+            telemetry.addData("ALPHA", sensorBase.getAlpha());
+            telemetry.addData("IS_ALPHA", sensorBase.isAlpha());
+            telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);
             //Stops the opMode if it is stopped in any way
