@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+import android.hardware.Sensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,6 +27,8 @@ public class Robot{
     //Intake
     private Intake intake;
 
+    private SensorBase sensorBase;
+
     /**
      * Robot()
      * Empty Constructor
@@ -40,15 +44,16 @@ public class Robot{
      * @param drive Instance of the DriveTrain of the robot
      * @param key Key to indicate what mode the robot should run
      */
-    public void robotInit(HardwareMap hm, DriveTrain drive, Intake intake, String key){
+    public void robotInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase, String key){
         this.drive=drive;
         this.intake = intake;
+        this.sensorBase = sensorBase;
         this.hm=hm;
         if (key.equals("autonomous")){
             autonomousInit(hm,drive,intake);
         }
         if (key.equals("teleop")){
-            teleopInit(hm,drive,intake);
+            teleopInit(hm,drive,intake,sensorBase);
         }
     }
 
@@ -72,11 +77,12 @@ public class Robot{
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
      */
-    public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake){
+    public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase){
         state = State.TELEOP;
         drive.init_Drive(hm,state);
         //sensorBase.init_SensorBase(hm);
-        intake.init_Intake(hm);
+        //intake.init_Intake(hm);
+        sensorBase.init_SensorBase(hm);
         //sensorBase.resetSensors();
     }
 

@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.kauailabs.navx.ftc.AHRS;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+
+import org.firstinspires.ftc.robotcontroller.internal.testcode.TestColorSensors;
 
 /**
  * Created by Eric on 9/16/2016.
@@ -13,7 +17,8 @@ public class SensorBase {
     private DeviceInterfaceModule dim;
 
     //Navx micro gyro
-    protected AHRS gyro;
+    private AHRS gyro;
+    private ColorSensor colorSensor;
 
     /**
      * SensorBase()
@@ -34,7 +39,8 @@ public class SensorBase {
 
         //initialize navx gyro
         gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
-
+        colorSensor = hm.colorSensor.get("colorSensor");
+        colorSensor.enableLed(true);
     }
 
     /**
@@ -69,5 +75,41 @@ public class SensorBase {
      */
     public boolean gyroIsConnected(){
         return gyro.isConnected();
+    }
+
+    public int getRed(){
+        return colorSensor.red();
+    }
+
+    public int getBlue(){
+        return colorSensor.blue();
+    }
+
+    public int getGreen(){
+        return colorSensor.green();
+    }
+
+    public boolean isBlue() {
+        return getBlue() > getRed();
+    }
+
+    public boolean isRed() {
+        return getRed() > getBlue();
+    }
+
+    public int getAlpha() {
+        return colorSensor.alpha();
+    }
+
+    public boolean isAlpha() {
+        return getAlpha() >= 5;
+    }
+
+    public void disableLED(){
+        colorSensor.enableLed(false);
+    }
+
+    public void enableLED(){
+        colorSensor.enableLed(true);
     }
 }

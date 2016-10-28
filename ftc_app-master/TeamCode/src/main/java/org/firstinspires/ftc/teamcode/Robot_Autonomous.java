@@ -21,8 +21,8 @@ public class Robot_Autonomous extends LinearOpMode{
     navXPIDController turnController;
 
     public void runOpMode() throws InterruptedException {
-        robot.robotInit(super.hardwareMap, drive,intake, "autonomous");
-        turnController = new navXPIDController(sensorBase.gyro,navXPIDController.navXTimestampedDataSource.YAW);
+        //robot.robotInit(super.hardwareMap, drive,intake, "autonomous");
+        //turnController = new navXPIDController(sensorBase.,navXPIDController.navXTimestampedDataSource.YAW);
         turnController.setSetpoint(Constants.AUTO_STATE1_TURN_DEGREES);
         turnController.setContinuous(true);
         turnController.setOutputRange(-1, 1);
