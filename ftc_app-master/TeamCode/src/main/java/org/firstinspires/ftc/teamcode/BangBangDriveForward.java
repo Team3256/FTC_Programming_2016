@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+
 /**
  * Created by Team 2891 on 10/28/2016.
  */
 public class BangBangDriveForward extends Command {
-
     DriveTrain drive = new DriveTrain();
     public void initialize(HardwareMap hm){
         drive.init_Drive(hm, Robot.State.AUTONOMOUS);
