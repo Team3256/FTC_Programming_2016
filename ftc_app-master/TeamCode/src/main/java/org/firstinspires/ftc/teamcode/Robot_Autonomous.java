@@ -35,11 +35,21 @@ public class Robot_Autonomous extends LinearOpMode{
         sensorBase.resetSensors();
         drive.resetEncoders();
         sensorBase.disableLED();
-        BangBangDriveForward bangBangDriveForward = new BangBangDriveForward();
-        bangBangDriveForward.initialize(hardwareMap);
+        //BangBangDriveForward bangBangDriveForward = new BangBangDriveForward();
+        //bangBangDriveForward.initialize(hardwareMap);
+        PIDDriveForward pidDriveForward = new PIDDriveForward();
+        pidDriveForward.initialize(hardwareMap);
+
+        //PIDTurn pidTurn = new PIDTurn();
+        //pidTurn.initialize(hardwareMap);
+
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
-            bangBangDriveForward.run();
+            //bangBangDriveForward.run();
+            if (!pidDriveForward.isFinished())
+                pidDriveForward.run();
+            /*else
+                pidTurn.run();*/
             telemetry.addData("Current Ticks", drive.getEncoderValue());
             telemetry.addData("Front Pos", drive.getRightFront().getCurrentPosition());
             telemetry.addData("Back Pos", drive.getRightBack().getCurrentPosition());

@@ -16,4 +16,11 @@ public class Constants {
     public static final double kD_STRAIGHT = 0;
     public static final double MIN_STRAIGHT_POWER = 0.2;
     public static final double MAX_STRAIGHT_POWER = 0.75;
+
+    public static final double AUTO_TURN_ANGLE = 90;
+    public static final double MIN_TURN_OUTPUT = -1;
+    public static final double MAX_TURN_OUTPUT = 1;
+    public static final double kP_TURN = 0.01;
+    public static final double kI_TURN = 0;
+    public static final double kD_TURN = 0;
 }

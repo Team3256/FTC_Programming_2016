@@ -47,7 +47,7 @@ public class Robot_Teleop extends LinearOpMode{
             x_button = gamepad1.x;
             y_button = gamepad1.y;
             if (intake_button) {
-                drive.runRight(-.3);
+                drive.runRight(-1);
             }
             else if (x_button){
                 drive.runRight(-0.5);

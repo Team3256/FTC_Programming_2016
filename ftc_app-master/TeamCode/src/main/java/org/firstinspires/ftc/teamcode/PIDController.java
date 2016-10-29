@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,5 +43,9 @@ public class PIDController {
         double d = kD * changeError;
         prevError = error;
         return Math.max(minOutput, Math.min(maxOutput, p + i + d));
+    }
+
+    public double getError() {
+        return error;
     }
 }

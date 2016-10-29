@@ -8,4 +8,5 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public abstract class Command {
     public abstract void initialize(HardwareMap hm);
     public abstract void run();
+    public abstract boolean isFinished();
 }

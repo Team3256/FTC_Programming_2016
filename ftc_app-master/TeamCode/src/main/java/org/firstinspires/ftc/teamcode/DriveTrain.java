@@ -86,7 +86,7 @@ public class DriveTrain {
      * @param speed speed to run the right drive motors
      */
     public void runRight(double speed){
-        rightFront.setPower(speed);
+        rightFront.setPower(speed*0.75);
         rightBack.setPower(speed);
     }
 

@@ -8,17 +8,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class PIDDriveForward extends Command {
     DriveTrain drive = new DriveTrain();
     PIDController controller = new PIDController(Constants.kP_STRAIGHT, Constants.kI_STRAIGHT, Constants.kD_STRAIGHT);
+
     public void initialize(HardwareMap hm) {
         drive.init_Drive(hm, Robot.State.AUTONOMOUS);
         drive.resetEncoders();
         controller.reset();
         controller.setMinOutput(Constants.MIN_STRAIGHT_POWER);
         controller.setMaxOutput(Constants.MAX_STRAIGHT_POWER);
+        controller.calculatePID(0, Constants.DRIVE_DISTANCE);
     }
-    double output;
-    public void run(){
-        output = controller.calculatePID(drive.getEncoderValue(),24);
+
+    public void run() {
+        double output = controller.calculatePID(drive.ticksToInches(drive.getEncoderValue()), Constants.DRIVE_DISTANCE);
         drive.runLeft(output);
         drive.runRight(output);
+    }
+
+    public boolean isFinished() {
+        return controller.getError() <= 0.5;
     }
 }
