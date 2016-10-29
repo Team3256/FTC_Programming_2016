@@ -86,7 +86,7 @@ public class DriveTrain {
      * @param speed speed to run the right drive motors
      */
     public void runRight(double speed){
-        rightFront.setPower(speed*0.75);
+        rightFront.setPower(speed);
         rightBack.setPower(speed);
     }
 
@@ -114,8 +114,12 @@ public class DriveTrain {
         return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
     }
 
-    public double getEncoderValue(){
+    public double getRightEncoderValue(){
         return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2;
+    }
+
+    public double getLeftEncoderValue(){
+        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2;
     }
 
     public void resetEncoders(){

@@ -27,27 +27,22 @@ public class VuforiaTest extends LinearOpMode {
         params.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
         vuforia = ClassFactory.createVuforiaLocalizer(params);
         Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS,4);
-
         beacons = vuforia.loadTrackablesFromAsset("FTC_2016-17");
         beacons.get(0).setName("Wheels");
         beacons.get(1).setName("Tools");
         beacons.get(2).setName("Legos");
         beacons.get(3).setName("Gears");
-
         super.waitForStart();
         beacons.activate();
 
         while(opModeIsActive()){
             for(VuforiaTrackable beac:beacons){
                 OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)beac.getListener()).getPose();
-
                 if (pose!=null){
                     VectorF translation = pose.getTranslation();
                     telemetry.addData(beac.getName() + "-Translation", translation);
                     double degreestoTurn = Math.min(Math.abs(Math.toDegrees(Math.atan2(translation.get(0),translation.get(2)))+180),Math.abs(Math.toDegrees(Math.atan2(translation.get(0),translation.get(2)))-180));
-
                     telemetry.addData(beac.getName() + "-Degrees", degreestoTurn);
-
                 }
 
             }

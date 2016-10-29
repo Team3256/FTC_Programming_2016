@@ -38,6 +38,7 @@ public class Robot_Teleop extends LinearOpMode{
 
         sensorBase.disableLED();
         sensorBase.enableLED();
+        sensorBase.resetSensors();
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
@@ -63,6 +64,7 @@ public class Robot_Teleop extends LinearOpMode{
             //telemetry.addData("Connected", sensorBase.gyroIsConnected());
             //telemetry.update();
             //sensorBase.disableLED();
+            telemetry.addData("gyro", sensorBase.getAngle());
             telemetry.addData("BLUE_VAL", sensorBase.getBlue());
             telemetry.addData("RED_VAL", sensorBase.getRed());
             telemetry.addData("IS_BLUE", sensorBase.isBlue());

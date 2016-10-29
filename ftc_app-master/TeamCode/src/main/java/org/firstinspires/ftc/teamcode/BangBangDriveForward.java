@@ -13,7 +13,7 @@ public class BangBangDriveForward extends Command {
         drive.resetEncoders();
     }
     public void run(){
-        double distanceRemaining = Constants.DRIVE_DISTANCE - drive.ticksToInches(drive.getEncoderValue());
+        double distanceRemaining = Constants.DRIVE_DISTANCE - drive.ticksToInches(drive.getRightEncoderValue());
         if (Math.abs(distanceRemaining) <= 1){
             drive.runRight(0.0);
             drive.runLeft(0.0);
@@ -30,6 +30,6 @@ public class BangBangDriveForward extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(Constants.DRIVE_DISTANCE - drive.ticksToInches(drive.getEncoderValue())) <= 1;
+        return Math.abs(Constants.DRIVE_DISTANCE - drive.ticksToInches(drive.getRightEncoderValue())) <= 1;
     }
 }
