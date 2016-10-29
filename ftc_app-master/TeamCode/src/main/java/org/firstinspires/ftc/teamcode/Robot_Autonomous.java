@@ -2,69 +2,53 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.kauailabs.navx.ftc.navXPIDController;
-
-import java.text.DecimalFormat;
 
 /**
- * Created by Team 2891 on 9/17/2016.
+ * Created by Team 2891 on 9/16/2016.
  */
-@Autonomous(name="Autonmous", group="Linear OpMode")
+
+@Autonomous(name="Autonomous", group = "Linear OpMode")
 public class Robot_Autonomous extends LinearOpMode{
 
+    //Create subsytem objects
     private DriveTrain drive = new DriveTrain();
-    private SensorBase sensorBase = new SensorBase();
     private Intake intake = new Intake();
+    private SensorBase sensorBase = new SensorBase();
 
+    //Create robot object
     private Robot robot = new Robot();
 
-    navXPIDController turnController;
+    //doubles for joystick values
 
+    /**
+     * runOpMode()
+     * Runs the teleop OpMode
+     * @throws InterruptedException - ESTOP, cancel OpMode
+     */
     public void runOpMode() throws InterruptedException {
-        //robot.robotInit(super.hardwareMap, drive,intake, "autonomous");
-        //turnController = new navXPIDController(sensorBase.,navXPIDController.navXTimestampedDataSource.YAW);
-        turnController.setSetpoint(Constants.AUTO_STATE1_TURN_DEGREES);
-        turnController.setContinuous(true);
-        turnController.setOutputRange(-1, 1);
-        turnController.setPID(Constants.TURN_PID_KP, Constants.TURN_PID_KI, Constants.TURN_PID_KD);
+
+        //Waits until the init button is pressed to start running the OpMOde
         super.waitForStart();
-        try {
-            turnController.enable(true);
-            int DEVICE_TIMEOUT_MS = 500;
-            navXPIDController.PIDResult yawPIDResult = new navXPIDController.PIDResult();
 
-            DecimalFormat df = new DecimalFormat("#.##");
-
-            while ( opModeIsActive() &&
-                    !Thread.currentThread().isInterrupted()) {
-                /*
-                if (turnController.waitForNewUpdate(yawPIDResult, DEVICE_TIMEOUT_MS)) {
-                    if (yawPIDResult.isOnTarget()) {
-                        drive.runLeft(0);
-                        drive.runRight(0);
-                    } else {
-                        double output = yawPIDResult.getOutput();
-                        drive.runLeft(output);
-                        drive.runRight(-output);
-                        telemetry.addData("PIDOutput", df.format(output) + ", " +
-                                df.format(-output));
-                    }
-                    telemetry.addData("PIDOutput", df.format(0.00));
-
-                }
-                */
-                telemetry.addData("Yaw", df.format(sensorBase.getAngle()));
-                robot.waitForTick(40);
-                idle();
-            }
-
-        }
-        catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        finally {
-            turnController.close();
-            telemetry.addData("LinearOp", "Complete");
+        //Initializes the robot and its subsystems
+        robot.robotInit(super.hardwareMap, drive, intake, sensorBase, "autonomous");
+        sensorBase.resetSensors();
+        drive.resetEncoders();
+        sensorBase.disableLED();
+        BangBangDriveForward bangBangDriveForward = new BangBangDriveForward();
+        bangBangDriveForward.initialize(hardwareMap);
+        //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
+        while(opModeIsActive()) {
+            bangBangDriveForward.run();
+            telemetry.addData("Current Ticks", drive.getEncoderValue());
+            telemetry.addData("Front Pos", drive.getRightFront().getCurrentPosition());
+            telemetry.addData("Back Pos", drive.getRightBack().getCurrentPosition());
+            telemetry.addData("Current Inches", drive.ticksToInches(drive.getEncoderValue()));
+            telemetry.update();
+            //Wait for the next tick before looping again
+            robot.waitForTick(40);
+            //Stops the opMode if it is stopped in any way
+            idle();
         }
     }
 }

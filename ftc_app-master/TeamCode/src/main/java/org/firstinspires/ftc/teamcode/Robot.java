@@ -13,7 +13,7 @@ public class Robot{
     private HardwareMap hm;
 
     //Enum for robot state
-    public enum State{DISABLED, AUTONOMOUS, TELEOP};
+    public enum State{DISABLED, AUTONOMOUS, TELEOP}
 
     //Current state of Robot, starts out as Disabled
     State state = State.DISABLED;
@@ -66,8 +66,8 @@ public class Robot{
     public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake){
         state = State.AUTONOMOUS;
         drive.init_Drive(hm,state);
-        //sensorBase.init_SensorBase(hm);
-        intake.init_Intake(hm);
+        sensorBase.init_SensorBase(hm);
+        //intake.init_Intake(hm);
         //sensorBase.resetSensors();
     }
 

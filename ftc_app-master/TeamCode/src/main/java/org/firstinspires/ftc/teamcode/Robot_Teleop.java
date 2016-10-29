@@ -21,6 +21,7 @@ public class Robot_Teleop extends LinearOpMode{
     //doubles for joystick values
     double left1 = 0, right1 = 0;
     boolean intake_button = false, outtake_button = false;
+    boolean x_button = false, y_button = false;
 
     /**
      * runOpMode()
@@ -40,9 +41,21 @@ public class Robot_Teleop extends LinearOpMode{
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
-            right1 = -gamepad1 .right_stick_x;
+            right1 = -gamepad1.right_stick_x;
             intake_button = gamepad1.right_bumper;
             outtake_button = gamepad1.left_bumper;
+            x_button = gamepad1.x;
+            y_button = gamepad1.y;
+            if (intake_button) {
+                drive.runRight(-.3);
+            }
+            else if (x_button){
+                drive.runRight(-0.5);
+            }
+            else if (y_button){
+                drive.runRight(-0.7);
+            }
+            else drive.runRight(0);
             //drive.arcadeDrive(left1, right1);
             //intake.runIntake(intake_button,1);
             //intake.runIntake(outtake_button,-1);

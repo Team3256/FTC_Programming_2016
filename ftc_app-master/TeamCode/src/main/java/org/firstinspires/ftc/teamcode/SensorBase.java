@@ -51,6 +51,7 @@ public class SensorBase {
         this.resetGyro();
     }
 
+    public AHRS getGryo(){ return gyro;}
     /**
      * getAngle()
      * This method returns the current angle of the robot
@@ -64,7 +65,7 @@ public class SensorBase {
      * resetGyro()
      * This method resets the Gyro angle back to zero
      */
-    public void resetGyro(){
+    private void resetGyro(){
         gyro.zeroYaw();
     }
 

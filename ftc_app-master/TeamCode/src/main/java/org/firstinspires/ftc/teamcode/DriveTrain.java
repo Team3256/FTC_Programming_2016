@@ -109,4 +109,40 @@ public class DriveTrain {
         runLeft(left);
         runRight(right);
     }
+
+    public double ticksToInches(double ticks) {
+        return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
+    }
+
+    public double getEncoderValue(){
+        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2;
+    }
+
+    public void resetEncoders(){
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public DcMotor getLeftFront() {
+        return leftFront;
+    }
+
+    public DcMotor getLeftBack() {
+        return leftBack;
+    }
+
+    public DcMotor getRightFront() {
+        return rightFront;
+    }
+
+    public DcMotor getRightBack() {
+        return rightBack;
+    }
 }
