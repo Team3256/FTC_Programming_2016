@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Created by Team 2891 on 9/16/2016.
  */
 
-@Autonomous(name="Flytest", group = "Linear OpMode")
+@Autonomous(name="Flytest")
 public class FlywheelAuton extends LinearOpMode{
 
     //Create subsytem objects
@@ -31,12 +31,12 @@ public class FlywheelAuton extends LinearOpMode{
         super.waitForStart();
 
         //Initializes the robot and its subsystems
-        robot.robotInit(super.hardwareMap, drive, intake, sensorBase, "autonomous");
+        robot.robotInit(super.hardwareMap, drive, intake, sensorBase, "teleop");
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
-            drive.runRight(0.5);
-            drive.runLeft(0.5);
+            drive.runRight(0.6);
+            drive.runLeft(0.6);
         //Wait for the next tick before looping again
             robot.waitForTick(40);
             //Stops the opMode if it is stopped in any way

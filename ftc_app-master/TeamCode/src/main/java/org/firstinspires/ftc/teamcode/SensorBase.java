@@ -18,7 +18,8 @@ public class SensorBase {
 
     //Navx micro gyro
     private AHRS gyro;
-    private ColorSensor colorSensor;
+    private ColorSensor colorSensorL;
+    private ColorSensor colorSensorR;
 
     /**
      * SensorBase()
@@ -39,8 +40,10 @@ public class SensorBase {
 
         //initialize navx gyro
         gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
-        colorSensor = hm.colorSensor.get("colorSensor");
-        colorSensor.enableLed(true);
+        colorSensorL = hm.colorSensor.get("colorSensorL");
+        colorSensorR = hm.colorSensor.get("colorSensorR");
+        colorSensorL.enableLed(false);
+        colorSensorR.enableLed(false);
     }
 
     /**
@@ -78,39 +81,34 @@ public class SensorBase {
         return gyro.isConnected();
     }
 
-    public int getRed(){
-        return colorSensor.red();
+    public int getLRed(){
+        return colorSensorL.red();
     }
 
-    public int getBlue(){
-        return colorSensor.blue();
+    public int getLBlue(){
+        return colorSensorL.blue();
     }
 
-    public int getGreen(){
-        return colorSensor.green();
+    public int getRRed(){
+        return colorSensorR.red();
     }
 
-    public boolean isBlue() {
-        return getBlue() > getRed();
+    public int getRBlue(){
+        return colorSensorR.blue();
+    }
+    public boolean isLBlue() {
+        return getLBlue() > getLRed();
     }
 
-    public boolean isRed() {
-        return getRed() > getBlue();
+    public boolean isLRed() {
+        return getLRed() > getLBlue();
     }
 
-    public int getAlpha() {
-        return colorSensor.alpha();
+    public boolean isRBlue(){
+        return getRBlue() > getRRed();
     }
 
-    public boolean isAlpha() {
-        return getAlpha() >= 5;
-    }
-
-    public void disableLED(){
-        colorSensor.enableLed(false);
-    }
-
-    public void enableLED(){
-        colorSensor.enableLed(true);
+    public boolean isRRed(){
+        return getRRed() > getRBlue();
     }
 }

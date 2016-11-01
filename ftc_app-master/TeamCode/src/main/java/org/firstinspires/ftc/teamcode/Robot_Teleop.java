@@ -36,8 +36,6 @@ public class Robot_Teleop extends LinearOpMode{
         //Initializes the robot and its subsystems
         robot.robotInit(super.hardwareMap, drive, intake, sensorBase,"teleop");
 
-        sensorBase.disableLED();
-        sensorBase.enableLED();
         sensorBase.resetSensors();
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
@@ -64,13 +62,8 @@ public class Robot_Teleop extends LinearOpMode{
             //telemetry.addData("Connected", sensorBase.gyroIsConnected());
             //telemetry.update();
             //sensorBase.disableLED();
+            telemetry.addData("Current", drive.ticksToInches(drive.getRightEncoderValue()));
             telemetry.addData("gyro", sensorBase.getAngle());
-            telemetry.addData("BLUE_VAL", sensorBase.getBlue());
-            telemetry.addData("RED_VAL", sensorBase.getRed());
-            telemetry.addData("IS_BLUE", sensorBase.isBlue());
-            telemetry.addData("IS_RED", sensorBase.isRed());
-            telemetry.addData("ALPHA", sensorBase.getAlpha());
-            telemetry.addData("IS_ALPHA", sensorBase.isAlpha());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);

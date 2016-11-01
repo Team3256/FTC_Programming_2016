@@ -50,7 +50,7 @@ public class Robot{
         this.sensorBase = sensorBase;
         this.hm=hm;
         if (key.equals("autonomous")){
-            autonomousInit(hm,drive,intake);
+            autonomousInit(hm,drive,intake,sensorBase);
         }
         if (key.equals("teleop")){
             teleopInit(hm,drive,intake,sensorBase);
@@ -63,7 +63,7 @@ public class Robot{
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
      */
-    public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake){
+    public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase){
         state = State.AUTONOMOUS;
         drive.init_Drive(hm,state);
         sensorBase.init_SensorBase(hm);

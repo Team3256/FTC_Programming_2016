@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 /**
  * Created by Eric on 9/16/2016.
  */
@@ -35,9 +37,7 @@ public class DriveTrain {
         DcMotor.RunMode mode;
 
         if (state.equals(Robot.State.AUTONOMOUS)) {
-
-            mode = DcMotor.RunMode.RUN_USING_ENCODER;
-
+            mode = DcMotor.RunMode.RUN_TO_POSITION;
         }
         else {
             mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
@@ -101,6 +101,21 @@ public class DriveTrain {
         runRight(right);
     }
 
+    public void setTargetPos(int pos){
+        leftFront.setTargetPosition(pos);
+        rightFront.setTargetPosition(pos);
+        leftBack.setTargetPosition(pos);
+        rightBack.setTargetPosition(pos);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public int getTargetPos(){
+        return (leftFront.getTargetPosition());
+    }
+
     public void arcadeDrive(double throttle, double turn){
         throttle = Range.clip(throttle,-1,1);
         turn = Range.clip(turn,-1,1);
@@ -112,6 +127,10 @@ public class DriveTrain {
 
     public double ticksToInches(double ticks) {
         return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
+    }
+
+    public double inchesToTicks(double inches) {
+        return inches*Constants.TICKS_PER_ROTATION/Constants.WHEEL_DIAMETER/Math.PI;
     }
 
     public double getRightEncoderValue(){

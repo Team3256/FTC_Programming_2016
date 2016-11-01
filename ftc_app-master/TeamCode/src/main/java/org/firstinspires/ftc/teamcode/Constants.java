@@ -7,7 +7,7 @@ public class Constants {
 
     public static final int GYRO_I2C_PORT = 0;
     public static final byte NAVX_GYRO_UPDATE_HZ = 100;
-    public static final double DRIVE_DISTANCE = 72;
+    public static final double DRIVE_DISTANCE = 24;
     public static final double WHEEL_DIAMETER = 4;
     public static final double TICKS_PER_ROTATION = 1120;
 
