@@ -29,10 +29,12 @@ public class Robot_Autonomous extends LinearOpMode{
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
-            //autoSeq.run();
-            pidTurn.run();
-            telemetry.addData("00", pidTurn.turnController);
-            telemetry.addData("res", pidTurn.pidResult);
+            autoSeq.run();
+            telemetry.addData("00", autoSeq.sensorBase.getAngle());
+            telemetry.addData("step", autoSeq.getCurr_step());
+            telemetry.addData("mode", autoSeq.driveTrain.getMode());
+            telemetry.addData("enc", autoSeq.driveTrain.getLeftEncoderValue());
+            telemetry.addData("colorsen", autoSeq.sensorBase.isWhite());
             telemetry.update();
             //Wait for the next tick before looping again
             autoSeq.robot.waitForTick(40);

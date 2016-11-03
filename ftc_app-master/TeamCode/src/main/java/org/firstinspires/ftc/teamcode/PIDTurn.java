@@ -19,31 +19,37 @@ public class PIDTurn extends Command {
         sensorBase.resetSensors();
         pidResult = new navXPIDController.PIDResult();
         turnController = new navXPIDController(sensorBase.getGryo(), navXPIDController.navXTimestampedDataSource.YAW);
-        turnController.setSetpoint(Constants.AUTO_TURN_ANGLE);
         turnController.setContinuous(true);
         turnController.setOutputRange(Constants.MIN_TURN_OUTPUT, Constants.MAX_TURN_OUTPUT);
-        turnController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE,2);
+        turnController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, 2);
         turnController.setPID(Constants.kP_TURN, Constants.kI_TURN, Constants.kD_TURN);
-        turnController.enable(true);
     }
 
+    private double direction;
+    double setpoint;
+    public void setParams(double setpoint, boolean right){
+        this.setpoint = setpoint;
+        turnController.setSetpoint(setpoint);
+        direction = (right?1:-1);
+        turnController.reset();
+        turnController.enable(true);
+    }
     public void run() {
         double output = 0;
         try {
-            if (turnController.waitForNewUpdate(pidResult, 5)) {
+            if (turnController.waitForNewUpdate(pidResult, 20)) {
                 if (turnController.isOnTarget()) {
                     drive.runRight(0);
                     drive.runLeft(0);
-                    turnController.enable(false);
                 } else {
                     output = turnController.get();
                     if (output < 0) {
-                        drive.runLeft(output);
-                        drive.runRight(-output);
+                        drive.runLeft(direction*output);
+                        drive.runRight(direction*-output);
                     }
                     else {
-                        drive.runRight(output);
-                        drive.runLeft(-output);
+                        drive.runRight(direction*output);
+                        drive.runLeft(direction*-output);
                     }
                 }
             }
@@ -53,6 +59,13 @@ public class PIDTurn extends Command {
     }
 
     public boolean isFinished() {
-        return turnController.isOnTarget();
+        return (Math.abs(setpoint-sensorBase.getAngle())<2);
     }
+    public void end(){
+        drive.runLeft(0);
+        drive.runRight(0);
+        turnController.reset();
+        turnController.enable(false);
+    }
+
 }

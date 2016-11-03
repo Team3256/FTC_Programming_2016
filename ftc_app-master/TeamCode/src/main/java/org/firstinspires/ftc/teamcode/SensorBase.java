@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -20,6 +22,7 @@ public class SensorBase {
     private AHRS gyro;
     private ColorSensor colorSensorL;
     private ColorSensor colorSensorR;
+    private ColorSensor bottom;
 
     /**
      * SensorBase()
@@ -44,6 +47,9 @@ public class SensorBase {
         colorSensorR = hm.colorSensor.get("colorSensorR");
         colorSensorL.enableLed(false);
         colorSensorR.enableLed(false);
+        bottom = hm.colorSensor.get("bottom");
+        bottom.enableLed(false);
+        bottom.enableLed(true);
     }
 
     /**
@@ -70,15 +76,6 @@ public class SensorBase {
      */
     private void resetGyro(){
         gyro.zeroYaw();
-    }
-
-    /**
-     * gyroIsConnected()
-     * checks if the gyro is connected to the device interface module
-     * @return gyro isConnected
-     */
-    public boolean gyroIsConnected(){
-        return gyro.isConnected();
     }
 
     public int getLRed(){
@@ -110,5 +107,13 @@ public class SensorBase {
 
     public boolean isRRed(){
         return getRRed() > getRBlue();
+    }
+
+    public int getWhite(){
+        return bottom.alpha();
+    }
+
+    public boolean isWhite(){
+        return getWhite()>10;
     }
 }

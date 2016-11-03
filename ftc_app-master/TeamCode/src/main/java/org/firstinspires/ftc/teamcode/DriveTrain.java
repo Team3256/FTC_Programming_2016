@@ -53,10 +53,10 @@ public class DriveTrain {
         rightBack = this.hm.dcMotor.get("rightBack");
 
         //set motor directions
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
         //set motor mode
         leftFront.setMode(mode);
         leftBack.setMode(mode);
@@ -70,6 +70,16 @@ public class DriveTrain {
         rightBack.setPower(0);
     }
 
+    public void setMode(DcMotor.RunMode mode){
+        leftFront.setMode(mode);
+        leftBack.setMode(mode);
+        rightFront.setMode(mode);
+        rightBack.setMode(mode);
+    }
+
+    public DcMotor.RunMode getMode(){
+        return leftFront.getMode();
+    }
     /**
      * runLeft()
      * Runs the left DriveTrain motors
