@@ -16,23 +16,23 @@ public class PIDTurn extends Command {
     public void initialize(HardwareMap hm) {
         drive.init_Drive(hm, Robot.State.TELEOP);
         sensorBase.init_SensorBase(hm);
-        sensorBase.resetSensors();
-        pidResult = new navXPIDController.PIDResult();
+    }
+
+    private double direction;
+    double setpoint;
+
+    public void setParams(double setpoint, boolean right){
         turnController = new navXPIDController(sensorBase.getGryo(), navXPIDController.navXTimestampedDataSource.YAW);
         turnController.setContinuous(true);
         turnController.setOutputRange(Constants.MIN_TURN_OUTPUT, Constants.MAX_TURN_OUTPUT);
         turnController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, 2);
         turnController.setPID(Constants.kP_TURN, Constants.kI_TURN, Constants.kD_TURN);
-    }
-
-    private double direction;
-    double setpoint;
-    public void setParams(double setpoint, boolean right){
+        pidResult = new navXPIDController.PIDResult();
         this.setpoint = setpoint;
         turnController.setSetpoint(setpoint);
         direction = (right?1:-1);
-        turnController.reset();
         turnController.enable(true);
+        turnController.yawReset();
     }
     public void run() {
         double output = 0;
@@ -66,6 +66,7 @@ public class PIDTurn extends Command {
         drive.runRight(0);
         turnController.reset();
         turnController.enable(false);
+        turnController.close();
     }
 
 }

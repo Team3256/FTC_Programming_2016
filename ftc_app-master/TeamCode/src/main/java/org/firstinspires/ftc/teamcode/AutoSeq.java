@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * Created by Team 2891 on 10/31/2016.
  */
-public class AutoSeq extends Command{
+public class AutoSeq{
     DriveTrain driveTrain = new DriveTrain();
     Intake intake = new Intake();
     SensorBase sensorBase = new SensorBase();
@@ -41,10 +41,9 @@ public class AutoSeq extends Command{
         pidTurn2.initialize(hm);
         moveForwardTwo.initialize(hm);
         waitOne = new WaitCommand(1000);
-        resetEncoders = new WaitCommand(100);
     }
 
-    public void run() {
+    public void run(HardwareMap hm) {
         //drive forward
         if (curr_step == 0) {
             if (moveForwardOne.isFinished()) {
@@ -77,7 +76,6 @@ public class AutoSeq extends Command{
             //reset encoder mode
             driveTrain.resetEncoders();
             //wait for enc to reset
-            resetEncoders.run();
             //set next mode for next state
             driveTrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             curr_step++;
@@ -93,23 +91,20 @@ public class AutoSeq extends Command{
         else if (curr_step == 5) {
             if (moveForwardTwo.isFinished()||sensorBase.isWhite()) {
                 moveForwardTwo.end();
-                curr_step++;
+                sensorBase.resetSensors();
+                pidTurn2.setParams(Constants.AUTO_TURN_ANGLE_2, true);
+                curr_step+=2;
             } else moveForwardTwo.run();
-        }
-        else if (curr_step == 6) {
-            //wait again
-            waitOne.run();
-            curr_step++;
-            pidTurn2.setParams(Constants.AUTO_TURN_ANGLE_2, true);
-            driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            sensorBase.resetSensors();
         }
         else if (curr_step == 7) {
             if (pidTurn2.isFinished()) {
                 pidTurn2.end();
                 curr_step++;
-            } else pidTurn2.run();
-        }
+            } else {
+                driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                pidTurn2.run();
+            }
+        }/**
         else if (curr_step == 8){
             driveTrain.resetEncoders();
             driveTrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -123,7 +118,7 @@ public class AutoSeq extends Command{
                 curr_step++;
             }
             else moveForwardThree.run();
-        }/**
+        }
         else if (curr_step == 10){
 
             driveTrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

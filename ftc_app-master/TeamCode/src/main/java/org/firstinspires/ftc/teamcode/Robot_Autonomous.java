@@ -29,8 +29,8 @@ public class Robot_Autonomous extends LinearOpMode{
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
-            autoSeq.run();
-            telemetry.addData("00", autoSeq.sensorBase.getAngle());
+            autoSeq.run(hardwareMap);
+            telemetry.addData("gyro", autoSeq.sensorBase.getAngle());
             telemetry.addData("step", autoSeq.getCurr_step());
             telemetry.addData("mode", autoSeq.driveTrain.getMode());
             telemetry.addData("enc", autoSeq.driveTrain.getLeftEncoderValue());

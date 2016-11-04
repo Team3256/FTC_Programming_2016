@@ -52,6 +52,10 @@ public class SensorBase {
         bottom.enableLed(true);
     }
 
+    public void createGyro(){
+        gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
+    }
+
     /**
      * resetSensors()
      * resets all the sensors on the robot
@@ -66,16 +70,18 @@ public class SensorBase {
      * This method returns the current angle of the robot
      * @return angle current angle from the gyro
      */
+    double offset = 0;
     public double getAngle(){
-        return gyro.getYaw();
+        return gyro.getYaw()-offset;
     }
 
     /**
      * resetGyro()
      * This method resets the Gyro angle back to zero
      */
-    private void resetGyro(){
+    public void resetGyro(){
         gyro.zeroYaw();
+        offset = gyro.getYaw();
     }
 
     public int getLRed(){
