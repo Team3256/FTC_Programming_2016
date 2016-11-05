@@ -18,9 +18,8 @@ public class AlignToLine extends Command {
 
     @Override
     public void run() {
-        isLeft = sensorBase.isLWhite();
-        isRight = sensorBase.isRWhite();
-
+        isLeft = true; //sensorBase.isLWhite();
+        isRight = sensorBase.getOds()>0.5;
         if (isLeft && isRight){
             finished = true;
         }

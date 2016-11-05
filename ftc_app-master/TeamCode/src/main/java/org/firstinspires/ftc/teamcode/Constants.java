@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode;
  */
 public class Constants {
 
-    public static final int GYRO_I2C_PORT = 2;
+    public static final int GYRO_I2C_PORT = 1;
     public static final byte NAVX_GYRO_UPDATE_HZ = 50;
     public static final double DRIVE_DISTANCE = 24;
     public static final double WHEEL_DIAMETER = 4;
@@ -17,8 +17,8 @@ public class Constants {
     public static final double MIN_STRAIGHT_POWER = -0.55;
     public static final double MAX_STRAIGHT_POWER = 0.55;
 
-    public static final double AUTO_TURN_ANGLE = 44;
-    public static final double AUTO_TURN_ANGLE_2 = 37;
+    public static final double AUTO_TURN_ANGLE = 40;
+    public static final double AUTO_TURN_ANGLE_2 = 19;
     public static final double MIN_TURN_OUTPUT = -0.75;
     public static final double MAX_TURN_OUTPUT = 0.75;
     public static final double kP_TURN = 0.008;

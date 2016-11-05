@@ -16,6 +16,7 @@ public class PIDDriveForward extends Command {
 
     public void setPower(double power){
         this.power = power;
+        drive.resetEncoders();
     }
 
     public void initialize(HardwareMap hm) {

@@ -21,10 +21,7 @@ public class SensorBase {
 
     //Navx micro gyro
     private AHRS gyro;
-    private ColorSensor colorSensorL;
-    private ColorSensor colorSensorR;
-    private ColorSensor bottomL;
-    private ColorSensor bottomR;
+    private OpticalDistanceSensor ods;
 
     /**
      * SensorBase()
@@ -45,18 +42,7 @@ public class SensorBase {
 
         //initialize navx gyro
         gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
-        colorSensorL = hm.colorSensor.get("colorSensorL");
-        colorSensorR = hm.colorSensor.get("colorSensorR");
-        colorSensorL.enableLed(false);
-        colorSensorR.enableLed(false);
-        bottomL = hm.colorSensor.get("bottomL");
-        bottomL.setI2cAddress(I2cAddr.create7bit(0x26));
-        bottomL.enableLed(false);
-        bottomL.enableLed(true);
-        bottomR = hm.colorSensor.get("bottomR");
-        bottomR.setI2cAddress(I2cAddr.create7bit(0x1E));
-        bottomR.enableLed(false);
-        bottomR.enableLed(true);
+        ods = hm.opticalDistanceSensor.get("ods");
         hm.logDevices();
     }
 
@@ -78,9 +64,8 @@ public class SensorBase {
      * This method returns the current angle of the robot
      * @return angle current angle from the gyro
      */
-    double offset = 0;
     public double getAngle(){
-        return gyro.getYaw()-offset;
+        return gyro.getYaw();
     }
 
     /**
@@ -89,49 +74,9 @@ public class SensorBase {
      */
     public void resetGyro(){
         gyro.zeroYaw();
-        offset = gyro.getYaw();
     }
 
-    public int getLRed(){
-        return colorSensorL.red();
+    public double getOds(){
+        return ods.getLightDetected();
     }
-
-    public int getLBlue(){
-        return colorSensorL.blue();
-    }
-
-    public int getRRed(){
-        return colorSensorR.red();
-    }
-
-    public int getRBlue(){
-        return colorSensorR.blue();
-    }
-    public boolean isLBlue() {
-        return getLBlue() > getLRed();
-    }
-
-    public boolean isLRed() {
-        return getLRed() > getLBlue();
-    }
-
-    public boolean isRBlue(){
-        return getRBlue() > getRRed();
-    }
-
-    public boolean isRRed(){
-        return getRRed() > getRBlue();
-    }
-
-    public int getLWhite(){
-        return bottomL.alpha();
-    }
-
-    public boolean isLWhite(){
-        return getLWhite()>10;
-    }
-
-    public int getRWhite() {return bottomR.alpha();}
-
-    public boolean isRWhite() { return getRWhite()>10;}
 }

@@ -12,7 +12,8 @@ public class AutoSeq{
     SensorBase sensorBase = new SensorBase();
     Robot robot = new Robot();
     PIDTurn pidTurn;
-    PIDTurn pidTurn2;
+    //PIDTurn pidTurn2;
+    Turn turn;
     PIDDriveForward moveForwardOne;
     PIDDriveForward moveForwardTwo;
     PIDDriveForward moveForwardThree;
@@ -37,8 +38,10 @@ public class AutoSeq{
         moveBackwardOne.initialize(hm);
         pidTurn = new PIDTurn();
         pidTurn.initialize(hm);
-        pidTurn2 = new PIDTurn();
-        pidTurn2.initialize(hm);
+        //pidTurn2 = new PIDTurn();
+        //pidTurn2.initialize(hm);
+        turn = new Turn();
+        turn.initialize(hm);
         moveForwardTwo.initialize(hm);
         waitOne = new WaitCommand(1000);
     }
@@ -85,33 +88,33 @@ public class AutoSeq{
             waitOne.run();
             curr_step++;
             //Set next command params
-            moveForwardTwo.setPower(0.5);
+            moveForwardTwo.setPower(0.6);
             moveForwardTwo.setSetpoint(driveTrain.inchesToTicks(60));
         }
         else if (curr_step == 5) {
-            if (moveForwardTwo.isFinished()||sensorBase.isLWhite()) {
+            if (moveForwardTwo.isFinished()||sensorBase.getOds()>0.5) {
                 moveForwardTwo.end();
+                waitOne.run();
                 sensorBase.resetSensors();
-                pidTurn2.setParams(Constants.AUTO_TURN_ANGLE_2, true);
+                turn.setParams(Constants.AUTO_TURN_ANGLE_2, 0.3,true);
                 curr_step+=2;
             } else moveForwardTwo.run();
         }
         else if (curr_step == 7) {
-            if (pidTurn2.isFinished()) {
-                pidTurn2.end();
+            if (turn.isFinished()) {
+                turn.end();
                 curr_step++;
             } else {
                 driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                pidTurn2.run();
+                turn.run();
             }
         }
-        /*
         else if (curr_step == 8){
             driveTrain.resetEncoders();
             driveTrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             curr_step++;
             moveForwardThree.setPower(0.4);
-            moveForwardThree.setSetpoint(driveTrain.inchesToTicks(8));
+            moveForwardThree.setSetpoint(driveTrain.inchesToTicks(15));
         }
         else if (curr_step == 9){
             if (moveForwardThree.isFinished()){
@@ -122,23 +125,24 @@ public class AutoSeq{
         }
 
         else if (curr_step == 10){
-
             driveTrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //wait for enc to reset
-            resetEncoders.run();
+            waitOne.run();
+            driveTrain.resetEncoders();
             //set next mode for next state
             driveTrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             curr_step++;
             moveBackwardOne.setPower(-0.4);
-            moveBackwardOne.setSetpoint(14);
+            moveBackwardOne.setSetpoint(15);
         }
+
         else if (curr_step == 11){
             if (moveBackwardOne.isFinished()){
                 moveBackwardOne.end();
                 curr_step++;
             }
             else moveBackwardOne.run();
-        }*/
+        }/**/
     }
 
     public int getCurr_step(){
