@@ -33,6 +33,7 @@ public class PIDTurn extends Command {
         direction = (right?1:-1);
         turnController.enable(true);
         turnController.yawReset();
+        sensorBase.resetGyro();
     }
     public void run() {
         double output = 0;

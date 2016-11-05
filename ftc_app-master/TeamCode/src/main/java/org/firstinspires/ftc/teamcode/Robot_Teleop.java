@@ -64,6 +64,10 @@ public class Robot_Teleop extends LinearOpMode{
             //sensorBase.disableLED();
             telemetry.addData("Current", drive.ticksToInches(drive.getRightEncoderValue()));
             telemetry.addData("gyro", sensorBase.getAngle());
+            telemetry.addData("botL", sensorBase.isRWhite());
+            telemetry.addData("botLval", sensorBase.getRWhite());
+            telemetry.addData("botR", sensorBase.isLWhite());
+            telemetry.addData("botRval", sensorBase.getLWhite());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);

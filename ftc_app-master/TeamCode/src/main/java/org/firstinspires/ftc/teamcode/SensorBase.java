@@ -6,6 +6,7 @@ import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 import org.firstinspires.ftc.robotcontroller.internal.testcode.TestColorSensors;
@@ -22,7 +23,8 @@ public class SensorBase {
     private AHRS gyro;
     private ColorSensor colorSensorL;
     private ColorSensor colorSensorR;
-    private ColorSensor bottom;
+    private ColorSensor bottomL;
+    private ColorSensor bottomR;
 
     /**
      * SensorBase()
@@ -47,9 +49,15 @@ public class SensorBase {
         colorSensorR = hm.colorSensor.get("colorSensorR");
         colorSensorL.enableLed(false);
         colorSensorR.enableLed(false);
-        bottom = hm.colorSensor.get("bottom");
-        bottom.enableLed(false);
-        bottom.enableLed(true);
+        bottomL = hm.colorSensor.get("bottomL");
+        bottomL.setI2cAddress(I2cAddr.create7bit(0x26));
+        bottomL.enableLed(false);
+        bottomL.enableLed(true);
+        bottomR = hm.colorSensor.get("bottomR");
+        bottomR.setI2cAddress(I2cAddr.create7bit(0x1E));
+        bottomR.enableLed(false);
+        bottomR.enableLed(true);
+        hm.logDevices();
     }
 
     public void createGyro(){
@@ -115,11 +123,15 @@ public class SensorBase {
         return getRRed() > getRBlue();
     }
 
-    public int getWhite(){
-        return bottom.alpha();
+    public int getLWhite(){
+        return bottomL.alpha();
     }
 
-    public boolean isWhite(){
-        return getWhite()>10;
+    public boolean isLWhite(){
+        return getLWhite()>10;
     }
+
+    public int getRWhite() {return bottomR.alpha();}
+
+    public boolean isRWhite() { return getRWhite()>10;}
 }

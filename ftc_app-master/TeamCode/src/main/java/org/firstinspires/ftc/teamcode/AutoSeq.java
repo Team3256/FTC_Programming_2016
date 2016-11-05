@@ -89,7 +89,7 @@ public class AutoSeq{
             moveForwardTwo.setSetpoint(driveTrain.inchesToTicks(60));
         }
         else if (curr_step == 5) {
-            if (moveForwardTwo.isFinished()||sensorBase.isWhite()) {
+            if (moveForwardTwo.isFinished()||sensorBase.isLWhite()) {
                 moveForwardTwo.end();
                 sensorBase.resetSensors();
                 pidTurn2.setParams(Constants.AUTO_TURN_ANGLE_2, true);
@@ -104,7 +104,8 @@ public class AutoSeq{
                 driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 pidTurn2.run();
             }
-        }/**
+        }
+        /*
         else if (curr_step == 8){
             driveTrain.resetEncoders();
             driveTrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -119,6 +120,7 @@ public class AutoSeq{
             }
             else moveForwardThree.run();
         }
+
         else if (curr_step == 10){
 
             driveTrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

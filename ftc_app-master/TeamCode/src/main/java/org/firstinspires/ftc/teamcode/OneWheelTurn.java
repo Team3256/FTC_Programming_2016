@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
@@ -9,8 +10,8 @@ public class OneWheelTurn extends  Command{
     double power, setpoint;
     boolean right;
 
-    DriveTrain driveTrain;
-    SensorBase sensorBase;
+    DriveTrain driveTrain = new DriveTrain();
+    SensorBase sensorBase = new SensorBase();
 
     public OneWheelTurn(){
 
@@ -19,25 +20,33 @@ public class OneWheelTurn extends  Command{
     @Override
     public void initialize(HardwareMap hm) {
         driveTrain.init_Drive(hm,Robot.State.TELEOP);
+        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         sensorBase.init_SensorBase(hm);
         sensorBase.resetSensors();
-
     }
 
     public void setParams(double power, double setpoint, boolean right){
         this.power = power;
         this.setpoint = setpoint;
         this.right = right;
+        sensorBase.resetGyro();
     }
 
-    @Override
     public void run() {
-        if (right) driveTrain.runLeft(power);
-        else driveTrain.runRight(power);
+        if (right) driveTrain.runRight(power);
+        else if (!right) driveTrain.runLeft(power);
+        else {
+            driveTrain.runLeft(0);
+            driveTrain.runRight(0);
+        }
     }
 
-    @Override
     public boolean isFinished() {
-        return Math.abs(sensorBase.getAngle()-setpoint)<2;
+        return (setpoint-Math.abs(sensorBase.getAngle()))<2;
+    }
+
+    public void end(){
+        driveTrain.runLeft(0);
+        driveTrain.runRight(0);
     }
 }

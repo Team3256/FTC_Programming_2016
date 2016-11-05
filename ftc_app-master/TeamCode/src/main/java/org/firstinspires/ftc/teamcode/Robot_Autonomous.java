@@ -24,17 +24,13 @@ public class Robot_Autonomous extends LinearOpMode{
         AutoSeq autoSeq = new AutoSeq();
         autoSeq.initialize(hardwareMap);
 
-        PIDTurn pidTurn = new PIDTurn();
-        pidTurn.initialize(hardwareMap);
+        AutonSequence sequence = new AutonSequence();
+        sequence.initialize(hardwareMap);
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
-            autoSeq.run(hardwareMap);
-            telemetry.addData("gyro", autoSeq.sensorBase.getAngle());
-            telemetry.addData("step", autoSeq.getCurr_step());
-            telemetry.addData("mode", autoSeq.driveTrain.getMode());
-            telemetry.addData("enc", autoSeq.driveTrain.getLeftEncoderValue());
-            telemetry.addData("colorsen", autoSeq.sensorBase.isWhite());
+           // autoSeq.run(hardwareMap);
+            sequence.run(hardwareMap);
             telemetry.update();
             //Wait for the next tick before looping again
             autoSeq.robot.waitForTick(40);

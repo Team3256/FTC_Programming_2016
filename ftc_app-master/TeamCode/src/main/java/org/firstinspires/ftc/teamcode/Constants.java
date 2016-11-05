@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode;
  */
 public class Constants {
 
-    public static final int GYRO_I2C_PORT = 1;
+    public static final int GYRO_I2C_PORT = 2;
     public static final byte NAVX_GYRO_UPDATE_HZ = 50;
     public static final double DRIVE_DISTANCE = 24;
     public static final double WHEEL_DIAMETER = 4;
