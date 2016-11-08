@@ -14,6 +14,7 @@ public class Robot_Teleop extends LinearOpMode{
     private DriveTrain drive = new DriveTrain();
     private Intake intake = new Intake();
     private SensorBase sensorBase = new SensorBase();
+    private Beacon beacon = new Beacon();
 
     //Create robot object
     private Robot robot = new Robot();
@@ -31,12 +32,11 @@ public class Robot_Teleop extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
 
         //Waits until the init button is pressed to start running the OpMOde
-        super.waitForStart();
 
         //Initializes the robot and its subsystems
-        robot.robotInit(super.hardwareMap, drive, intake, sensorBase,"teleop");
+        robot.robotInit(super.hardwareMap, drive, intake, beacon, sensorBase, "teleop");
 
-        sensorBase.resetSensors();
+        super.waitForStart();
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
@@ -45,23 +45,9 @@ public class Robot_Teleop extends LinearOpMode{
             outtake_button = gamepad1.left_bumper;
             x_button = gamepad1.x;
             y_button = gamepad1.y;
-            if (intake_button) {
-                drive.runRight(-1);
-            }
-            else if (x_button){
-                drive.runRight(-0.5);
-            }
-            else if (y_button){
-                drive.runRight(-0.7);
-            }
-            else drive.runRight(0);
-            //drive.arcadeDrive(left1, right1);
-            //intake.runIntake(intake_button,1);
-            //intake.runIntake(outtake_button,-1);
-            //telemetry.addData("gyro", sensorBase.getAngle());
-            //telemetry.addData("Connected", sensorBase.gyroIsConnected());
-            //telemetry.update();
-            //sensorBase.disableLED();
+
+            beacon.incLeft(x_button,y_button);
+
             telemetry.addData("Current", drive.ticksToInches(drive.getRightEncoderValue()));
             telemetry.addData("gyro", sensorBase.getAngle());
             telemetry.addData("ods", sensorBase.getOds());

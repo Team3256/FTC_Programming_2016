@@ -29,6 +29,7 @@ public class Robot{
 
     private SensorBase sensorBase;
 
+    private Beacon beacon;
     /**
      * Robot()
      * Empty Constructor
@@ -44,16 +45,13 @@ public class Robot{
      * @param drive Instance of the DriveTrain of the robot
      * @param key Key to indicate what mode the robot should run
      */
-    public void robotInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase, String key){
-        this.drive=drive;
-        this.intake = intake;
-        this.sensorBase = sensorBase;
+    public void robotInit(HardwareMap hm, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase, String key){
         this.hm=hm;
         if (key.equals("autonomous")){
-            autonomousInit(hm,drive,intake,sensorBase);
+            autonomousInit(hm,drive,intake,beacon,sensorBase);
         }
         if (key.equals("teleop")){
-            teleopInit(hm,drive,intake,sensorBase);
+            teleopInit(hm,drive,intake,beacon,sensorBase);
         }
     }
 
@@ -63,12 +61,13 @@ public class Robot{
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
      */
-    public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase){
+    public void autonomousInit(HardwareMap hm, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
         state = State.AUTONOMOUS;
         drive.init_Drive(hm,state);
         sensorBase.init_SensorBase(hm);
         //intake.init_Intake(hm);
         //sensorBase.resetSensors();
+        //beacon.init_Beacon(hm);
     }
 
     /**
@@ -77,11 +76,13 @@ public class Robot{
      * @param hm Instance of the HardwareMap of the Robot
      * @param drive Instance of the DriveTrain of the Robot
      */
-    public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake, SensorBase sensorBase){
+    public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
         state = State.TELEOP;
         drive.init_Drive(hm,state);
         //sensorBase.init_SensorBase(hm);
         //intake.init_Intake(hm);
+        beacon.init_Beacon(hm);
+        beacon.initPos();
         sensorBase.init_SensorBase(hm);
         //sensorBase.resetSensors();
     }

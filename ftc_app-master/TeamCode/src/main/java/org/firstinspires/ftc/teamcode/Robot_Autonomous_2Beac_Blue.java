@@ -19,12 +19,15 @@ public class Robot_Autonomous_2Beac_Blue extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
 
         //Waits until the init button is pressed to start running the OpMOde
-        super.waitForStart();
 
         //AutoSeq autoSeq = new AutoSeq();
         //autoSeq.initialize(hardwareMap);
         AutonSequence_2Beac_Blue autonSequence = new AutonSequence_2Beac_Blue();
         autonSequence.initialize(hardwareMap);
+
+        //telemetry.addData("gyro initializing", autonSequence.sensorBase.getGryo().isCalibrating());
+
+        super.waitForStart();
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {
             /*if (!turn.isFinished())

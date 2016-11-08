@@ -14,6 +14,7 @@ public class FlywheelAuton extends LinearOpMode{
     private DriveTrain drive = new DriveTrain();
     private Intake intake = new Intake();
     private SensorBase sensorBase = new SensorBase();
+    private Beacon beacon = new Beacon();
 
     //Create robot object
     private Robot robot = new Robot();
@@ -31,7 +32,7 @@ public class FlywheelAuton extends LinearOpMode{
         super.waitForStart();
 
         //Initializes the robot and its subsystems
-        robot.robotInit(super.hardwareMap, drive, intake, sensorBase, "teleop");
+        robot.robotInit(super.hardwareMap, drive, intake, beacon, sensorBase, "teleop");
 
         //Loop running while the Teleop OpMode is Active (Until the Stop Button is pressed or until the FMS stops the robot)
         while(opModeIsActive()) {

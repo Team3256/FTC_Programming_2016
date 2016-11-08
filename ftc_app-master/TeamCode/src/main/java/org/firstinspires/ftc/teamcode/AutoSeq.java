@@ -10,6 +10,7 @@ public class AutoSeq{
     DriveTrain driveTrain = new DriveTrain();
     Intake intake = new Intake();
     SensorBase sensorBase = new SensorBase();
+    Beacon beacon = new Beacon();
     Robot robot = new Robot();
     PIDTurn pidTurn;
     //PIDTurn pidTurn2;
@@ -24,7 +25,7 @@ public class AutoSeq{
     int curr_step = 0;
 
     public void initialize(HardwareMap hm) {
-        robot.robotInit(hm, driveTrain, intake, sensorBase, "autonomous");
+        robot.robotInit(hm, driveTrain, intake, beacon, sensorBase, "autonomous");
         sensorBase.resetSensors();
         driveTrain.resetEncoders();
         moveForwardOne = new PIDDriveForward();

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.hardware.Camera;
+import android.media.CamcorderProfile;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
@@ -10,6 +13,7 @@ public class AutonSequence_2Beac_Blue{
     DriveTrain driveTrain = new DriveTrain();
     Intake intake = new Intake();
     SensorBase sensorBase = new SensorBase();
+    Beacon beacon = new Beacon();
     Robot robot = new Robot();
     OneWheelTurn oneWheelTurnOne;
     PIDDriveForward moveForwardOne;
@@ -27,7 +31,7 @@ public class AutonSequence_2Beac_Blue{
     int curr_step = 0;
 
     public void initialize(HardwareMap hm) {
-        robot.robotInit(hm, driveTrain, intake, sensorBase, "autonomous");
+        robot.robotInit(hm, driveTrain, intake, beacon, sensorBase, "autonomous");
         sensorBase.resetSensors();
         driveTrain.resetEncoders();
         waitOne = new WaitCommand(1000);
@@ -75,11 +79,12 @@ public class AutonSequence_2Beac_Blue{
             if (moveForwardOne.isFinished()||sensorBase.getOds()>0.5){
                 moveForwardOne.end();
                 sensorBase.resetSensors();
-                turn1.setParams(40, 0.18, true);
+                turn1.setParams(38, 0.18, true);
                 curr_step++;
             }
             else moveForwardOne.run();
         }
+
         else if (curr_step == 2){
             if (turn1.isFinished()){
                 turn1.end();
@@ -129,7 +134,7 @@ public class AutonSequence_2Beac_Blue{
         else if (curr_step == 7){
             if (compensateOvershoot.isFinished()||sensorBase.getOds()>0.5){
                 compensateOvershoot.end();
-                turn2SecondBeacon.setParams(83,0.25,true);
+                turn2SecondBeacon.setParams(83, 0.25, true);
                 sensorBase.resetSensors();
                 curr_step++;
             }
