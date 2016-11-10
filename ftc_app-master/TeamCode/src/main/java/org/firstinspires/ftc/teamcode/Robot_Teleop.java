@@ -46,16 +46,32 @@ public class Robot_Teleop extends LinearOpMode{
             x_button = gamepad1.x;
             y_button = gamepad1.y;
 
-            beacon.incLeft(x_button,y_button);
+            drive.arcadeDrive(left1,right1);
+            if (outtake_button){
+                beacon.setLeftBangPos();
+            }
+            else beacon.setLeftNeutralPos();
 
-            telemetry.addData("Current", drive.ticksToInches(drive.getRightEncoderValue()));
+            if (intake_button){
+                beacon.setRightBangPos();
+            }
+            else beacon.setRightNeutralPos();
+
+            sensorBase.disableBeaconLED();
+
             telemetry.addData("gyro", sensorBase.getAngle());
             telemetry.addData("ods", sensorBase.getOds());
+            telemetry.addData("blue", sensorBase.isBlue());
+            telemetry.addData("blue val", sensorBase.getBlue());
+
+            telemetry.addData("red val", sensorBase.getRed());
+            telemetry.addData("leftBeac", beacon.getLeftPos());
+            telemetry.addData("rightBeac", beacon.getRightPos());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);
             //Stops the opMode if it is stopped in any way
-            idle();
+            //idle();
         }
     }
 }

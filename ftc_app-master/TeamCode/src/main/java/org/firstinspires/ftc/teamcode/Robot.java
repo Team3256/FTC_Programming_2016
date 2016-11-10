@@ -66,8 +66,9 @@ public class Robot{
         drive.init_Drive(hm,state);
         sensorBase.init_SensorBase(hm);
         //intake.init_Intake(hm);
-        //sensorBase.resetSensors();
-        //beacon.init_Beacon(hm);
+        sensorBase.resetSensors();
+        beacon.init_Beacon(hm);
+        beacon.initPos();
     }
 
     /**
@@ -79,12 +80,11 @@ public class Robot{
     public void teleopInit(HardwareMap hm, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
         state = State.TELEOP;
         drive.init_Drive(hm,state);
-        //sensorBase.init_SensorBase(hm);
         //intake.init_Intake(hm);
         beacon.init_Beacon(hm);
         beacon.initPos();
         sensorBase.init_SensorBase(hm);
-        //sensorBase.resetSensors();
+        sensorBase.resetSensors();
     }
 
     /**

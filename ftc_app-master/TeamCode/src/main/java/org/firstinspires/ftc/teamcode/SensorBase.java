@@ -22,6 +22,7 @@ public class SensorBase {
     //Navx micro gyro
     private AHRS gyro;
     private OpticalDistanceSensor ods;
+    private ColorSensor beacon_sensor;
 
     /**
      * SensorBase()
@@ -43,13 +44,11 @@ public class SensorBase {
         //initialize navx gyro
         gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
         ods = hm.opticalDistanceSensor.get("ods");
+        beacon_sensor = hm.colorSensor.get("beacon");
+        beacon_sensor.enableLed(false);
+        beacon_sensor.enableLed(false);
         hm.logDevices();
     }
-
-    public void createGyro(){
-        gyro = AHRS.getInstance(dim, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
-    }
-
     /**
      * resetSensors()
      * resets all the sensors on the robot
@@ -78,5 +77,21 @@ public class SensorBase {
 
     public double getOds(){
         return ods.getLightDetected();
+    }
+
+    public boolean isBlue(){
+        return beacon_sensor.blue()>=2;
+    }
+
+    public void disableBeaconLED(){
+        beacon_sensor.enableLed(false);
+    }
+
+    public int getBlue(){
+        return beacon_sensor.blue();
+    }
+
+    public int getRed(){
+        return beacon_sensor.red();
     }
 }

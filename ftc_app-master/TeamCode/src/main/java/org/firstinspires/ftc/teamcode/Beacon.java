@@ -13,16 +13,17 @@ public class Beacon {
     private Servo leftDonger, rightDonger;
     private double leftPos = 0;
     private double rightPos = 1;
+    CRServo test;
 
     public void init_Beacon(HardwareMap hm){
         this.hm = hm;
-        leftDonger = hm.servo.get("leftDonger");
+        leftDonger = hm.servo.get(  "leftDonger");
         rightDonger = hm.servo.get("rightDonger");
     }
 
     public void initPos(){
-        leftDonger.setPosition(leftPos);
-        rightDonger.setPosition(rightPos);
+        setLeftNeutralPos();
+        setRightNeutralPos();
     }
 
     public void setLeftPos(double pos){
@@ -35,10 +36,10 @@ public class Beacon {
 
     public void incLeft(boolean left, boolean right){
         if (left){
-            leftPos+=0.005;
+            leftPos+=0.03;
         }
         else if (right){
-            leftPos-=0.005;
+            leftPos-=0.03;
         }
         else leftPos = leftDonger.getPosition();
         leftPos = Math.min(Math.max(leftPos,0),1);
@@ -47,10 +48,10 @@ public class Beacon {
 
     public void incRight(boolean left, boolean right){
         if (left){
-            rightPos+=0.005;
+            rightPos+=0.03;
         }
         else if (right){
-            rightPos-=0.005;
+            rightPos-=0.03;
         }
         else rightPos = rightDonger.getPosition();
         rightPos = Math.min(Math.max(rightPos,0),1);
@@ -58,4 +59,27 @@ public class Beacon {
 
     }
 
+    public double getLeftPos(){
+        return leftDonger.getPosition();
+    }
+
+    public double getRightPos(){
+        return rightDonger.getPosition();
+    }
+
+    public void setLeftBangPos(){
+        leftDonger.setPosition(0.72);
+    }
+
+    public void setRightBangPos(){
+        rightDonger.setPosition(.45);
+    }
+
+    public void setLeftNeutralPos(){
+        leftDonger.setPosition(0);
+    }
+
+    public void setRightNeutralPos(){
+        rightDonger.setPosition(0);
+    }
 }

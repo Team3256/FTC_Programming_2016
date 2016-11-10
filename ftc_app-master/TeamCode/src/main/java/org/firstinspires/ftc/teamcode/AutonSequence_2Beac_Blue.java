@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
+import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -26,7 +27,9 @@ public class AutonSequence_2Beac_Blue{
     Turn turn1;
     Turn turn2DriveSecondBeacon;
     Turn turn2SecondBeacon;
+    ServoSetPosition beaconOne;
     WaitCommand waitOne;
+    WaitCommand longWait;
 
     int curr_step = 0;
 
@@ -58,6 +61,9 @@ public class AutonSequence_2Beac_Blue{
         turn2SecondBeacon.initialize(hm);
         compensateOvershoot = new PIDDriveForward();
         compensateOvershoot.initialize(hm);
+        beaconOne = new ServoSetPosition();
+        beaconOne.initialize(hm);
+        longWait = new WaitCommand(5000);
     }
 
     double angle_offset;
@@ -88,13 +94,22 @@ public class AutonSequence_2Beac_Blue{
         else if (curr_step == 2){
             if (turn1.isFinished()){
                 turn1.end();
-                bangWall.setSetpoint(driveTrain.inchesToTicks(15));
-                bangWall.setPower(0.3);
+                boolean blue = (sensorBase.isBlue()?true:false);
+                beaconOne.seeBlue(blue);
                 curr_step++;
             }
             else turn1.run();
         }
         else if (curr_step == 3){
+            if (beaconOne.isFinished()){
+                bangWall.setSetpoint(driveTrain.inchesToTicks(15));
+                bangWall.setPower(0.3);
+                longWait.run();
+                curr_step++;
+            }
+            else beaconOne.run();
+        }
+        else if (curr_step == 4){
             if (bangWall.isFinished()){
                 bangWall.end();
                 unBangWall.setPower(-0.3);
@@ -104,7 +119,7 @@ public class AutonSequence_2Beac_Blue{
             else bangWall.run();
         }
 
-        else if (curr_step == 4){
+        else if (curr_step == 5){
             if (unBangWall.isFinished()){
                 unBangWall.end();
                 turn2DriveSecondBeacon.setParams(81, 0.2, false);
@@ -112,7 +127,7 @@ public class AutonSequence_2Beac_Blue{
             }
             else unBangWall.run();
         }
-        else if (curr_step == 5){
+        else if (curr_step == 6){
             if (turn2DriveSecondBeacon.isFinished()){
                 turn2DriveSecondBeacon.end();
                 drive2SecondBeaconPart2.setPower(0.6);
@@ -122,7 +137,7 @@ public class AutonSequence_2Beac_Blue{
             }
             else turn2DriveSecondBeacon.run();
         }
-        else if (curr_step == 6){
+        else if (curr_step == 7){
             if (drive2SecondBeaconPart2.isFinished()||(sensorBase.getOds()>0.5&&driveTrain.ticksToInches(driveTrain.getRightEncoderValue())>12)){
                 drive2SecondBeaconPart2.end();
                 compensateOvershoot.setPower(-0.15);
@@ -131,16 +146,16 @@ public class AutonSequence_2Beac_Blue{
             }
             else drive2SecondBeaconPart2.run();
         }
-        else if (curr_step == 7){
+        else if (curr_step == 8){
             if (compensateOvershoot.isFinished()||sensorBase.getOds()>0.5){
                 compensateOvershoot.end();
-                turn2SecondBeacon.setParams(83, 0.25, true);
+                turn2SecondBeacon.setParams(80, 0.23, true);
                 sensorBase.resetSensors();
                 curr_step++;
             }
             else compensateOvershoot.run();
         }
-        else if (curr_step == 8){
+        else if (curr_step == 9){
             if (turn2SecondBeacon.isFinished()){
                 turn2SecondBeacon.end();
                 bangWall.initialize(hm);
@@ -149,7 +164,7 @@ public class AutonSequence_2Beac_Blue{
                 curr_step++;
             } else turn2SecondBeacon.run();
         }
-        else if (curr_step == 9){
+        else if (curr_step == 10){
             if (bangWall.isFinished()){
                 bangWall.end();
                 curr_step++;
