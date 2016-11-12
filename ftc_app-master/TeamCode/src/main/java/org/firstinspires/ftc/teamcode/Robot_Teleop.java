@@ -3,6 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.subsystems.Beacon;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+
 /**
  * Created by Team 2891 on 9/16/2016.
  */
@@ -11,13 +17,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Robot_Teleop extends LinearOpMode{
 
     //Create subsytem objects
-    private DriveTrain drive = new DriveTrain();
-    private Intake intake = new Intake();
-    private SensorBase sensorBase = new SensorBase();
-    private Beacon beacon = new Beacon();
+    private DriveTrain drive = DriveTrain.getInstance();
+    private Intake intake = Intake.getIntake();
+    private SensorBase sensorBase = SensorBase.getInstance();
+    private Beacon beacon = Beacon.getBeacon();
 
     //Create robot object
-    private Robot robot = new Robot();
+    private Robot robot = Robot.getInstance();
 
     //doubles for joystick values
     double left1 = 0, right1 = 0;

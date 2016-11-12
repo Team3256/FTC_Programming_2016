@@ -3,15 +3,22 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.base.Constants;
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.subsystems.Beacon;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+
 /**
  * Created by Team 2891 on 10/31/2016.
  */
 public class AutoSeq{
-    DriveTrain driveTrain = new DriveTrain();
-    Intake intake = new Intake();
-    SensorBase sensorBase = new SensorBase();
-    Beacon beacon = new Beacon();
-    Robot robot = new Robot();
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    Intake intake = Intake.getIntake();
+    SensorBase sensorBase = SensorBase.getInstance();
+    Beacon beacon = Beacon.getBeacon();
+    Robot robot = Robot.getInstance();
     PIDTurn pidTurn;
     //PIDTurn pidTurn2;
     Turn turn;

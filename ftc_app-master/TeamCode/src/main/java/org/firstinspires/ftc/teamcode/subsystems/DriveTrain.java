@@ -1,57 +1,44 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.teamcode.base.Constants;
+import org.firstinspires.ftc.teamcode.base.Robot;
 
 /**
- * Created by Eric on 9/16/2016.
+ * Created by Team 6696 on 11/11/2016.
  */
 public class DriveTrain {
-
-    // Hardware Map to store all our electrical component objects
-    private HardwareMap hm = null;
-
-    //Drive Motors
+    private HardwareMap hardwareMap;
+    //motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
+    //singleton
+    private static DriveTrain driveTrain = new DriveTrain();
 
-    /**
-     * DriveTrain()
-     * Empty Constructor
-     */
-    public DriveTrain(){
+    private DriveTrain() {
 
     }
 
-    /**
-     * init_Drive()
-     * Initializes the whole drivetrain, including all the motors
-     * @param hm Instance of the HardwareMap of the Robot
-     * @param state State to initialize Robot in
-     */
-    public void init_Drive(HardwareMap hm, Robot.State state){
+    public void initDrive(HardwareMap hardwareMap, Robot.State state){
         //Choose what motor mode to run in: Encoder or No Encoder
         DcMotor.RunMode mode;
 
-        if (state.equals(Robot.State.AUTONOMOUS)) {
+        if (state.equals(Robot.State.AUTONOMOUS))
             mode = DcMotor.RunMode.RUN_TO_POSITION;
-        }
-        else {
+        else
             mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-        }
 
         //initialize the hardware map
-        this.hm = hm;
+        this.hardwareMap = hardwareMap;
 
         //initialize the motors
-        leftFront = this.hm.dcMotor.get("leftFront");
-        leftBack = this.hm.dcMotor.get("leftBack");
-        rightFront = this.hm.dcMotor.get("rightFront");
-        rightBack = this.hm.dcMotor.get("rightBack");
+        leftFront = this.hardwareMap.dcMotor.get("leftFront");
+        leftBack = this.hardwareMap.dcMotor.get("leftBack");
+        rightFront = this.hardwareMap.dcMotor.get("rightFront");
+        rightBack = this.hardwareMap.dcMotor.get("rightBack");
 
         //set motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -64,7 +51,6 @@ public class DriveTrain {
         rightFront.setMode(mode);
         rightBack.setMode(mode);
 
-        //initialize all motors to 0 power
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
@@ -78,41 +64,26 @@ public class DriveTrain {
         rightBack.setMode(mode);
     }
 
-    public DcMotor.RunMode getMode(){
+    public DcMotor.RunMode getMode() {
         return leftFront.getMode();
     }
-    /**
-     * runLeft()
-     * Runs the left DriveTrain motors
-     * @param speed speed to run the left drive motors
-     */
-    public void runLeft(double speed){
+
+    public void runLeft(double speed) {
         leftFront.setPower(speed);
         leftBack.setPower(speed);
     }
 
-    /**
-     * runRight()
-     * Runs the right DriveTrain motors
-     * @param speed speed to run the right drive motors
-     */
-    public void runRight(double speed){
+    public void runRight(double speed) {
         rightFront.setPower(speed);
         rightBack.setPower(speed);
     }
 
-    /**
-     * tankDrive()
-     * TankDrive method for controlling the robot
-     * @param left left drivetrain output
-     * @param right right drivetrain output
-     */
-    public void tankDrive(double left, double right){
+    public void tankDrive(double left, double right) {
         runLeft(left);
         runRight(right);
     }
 
-    public void setTargetPos(int pos){
+    public void setTargetPos(int pos) {
         leftFront.setTargetPosition(pos);
         rightFront.setTargetPosition(pos);
         leftBack.setTargetPosition(pos);
@@ -123,13 +94,13 @@ public class DriveTrain {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public int getTargetPos(){
-        return (leftFront.getTargetPosition());
+    public int getTargetPos() {
+        return leftFront.getTargetPosition();
     }
 
-    public void arcadeDrive(double throttle, double turn){
-        throttle = Range.clip(throttle,-1,1);
-        turn = Range.clip(turn,-1,1);
+    public void arcadeDrive(double throttle, double turn) {
+        throttle = Range.clip(throttle, -1, 1);
+        turn = Range.clip(turn, -1, 1);
         double left = throttle - turn;
         double right = throttle + turn;
         runLeft(left);
@@ -137,7 +108,7 @@ public class DriveTrain {
     }
 
     public double ticksToInches(double ticks) {
-        return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
+        return ticks* Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
     }
 
     public double inchesToTicks(double inches) {
@@ -177,5 +148,9 @@ public class DriveTrain {
 
     public DcMotor getRightBack() {
         return rightBack;
+    }
+
+    public static DriveTrain getInstance() {
+        return driveTrain;
     }
 }

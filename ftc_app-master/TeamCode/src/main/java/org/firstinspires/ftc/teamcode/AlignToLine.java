@@ -2,16 +2,20 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+
 /**
  * Created by Team 2891 on 11/4/2016.
  */
 public class AlignToLine extends Command {
-    DriveTrain driveTrain = new DriveTrain();
-    SensorBase sensorBase = new SensorBase();
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    SensorBase sensorBase = SensorBase.getInstance();
     @Override
     public void initialize(HardwareMap hm) {
-        driveTrain.init_Drive(hm, Robot.State.TELEOP);
-        sensorBase.init_SensorBase(hm);
+        driveTrain.initDrive(hm, Robot.State.TELEOP);
+        sensorBase.initSensorBase(hm);
     }
 
     boolean finished = false, isLeft = false, isRight = false;

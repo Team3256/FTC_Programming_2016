@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+
 /**
  * Created by Team 2891 on 10/28/2016.
  */
 public class PIDDriveForward extends Command {
-    DriveTrain drive = new DriveTrain();
-    SensorBase sensorBase = new SensorBase();
+    DriveTrain drive = DriveTrain.getInstance();
+    SensorBase sensorBase = SensorBase.getInstance();
 
     private double power;
 
@@ -20,9 +25,9 @@ public class PIDDriveForward extends Command {
     }
 
     public void initialize(HardwareMap hm) {
-        drive.init_Drive(hm, Robot.State.AUTONOMOUS);
+        drive.initDrive(hm, Robot.State.AUTONOMOUS);
         drive.resetEncoders();
-        sensorBase.init_SensorBase(hm);
+        sensorBase.initSensorBase(hm);
     }
 
     public void run() {

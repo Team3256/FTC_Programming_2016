@@ -2,14 +2,18 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.base.Constants;
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+
 
 /**
  * Created by Team 2891 on 10/28/2016.
  */
 public class BangBangDriveForward extends Command {
-    DriveTrain drive = new DriveTrain();
-    public void initialize(HardwareMap hm){
-        drive.init_Drive(hm, Robot.State.AUTONOMOUS);
+    DriveTrain drive = DriveTrain.getInstance();
+    public void initialize(HardwareMap hardwareMap){
+        drive.initDrive(hardwareMap, Robot.State.AUTONOMOUS);
         drive.resetEncoders();
     }
     public void run(){

@@ -3,19 +3,24 @@ package org.firstinspires.ftc.teamcode;
 import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.base.Constants;
+import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+
 
 /**
  * Created by Team 2891 on 10/29/2016.
  */
 public class PIDTurn extends Command {
-    DriveTrain drive = new DriveTrain();
-    SensorBase sensorBase = new SensorBase();
+    DriveTrain drive = DriveTrain.getInstance();
+    SensorBase sensorBase = SensorBase.getInstance();
     navXPIDController turnController;
     navXPIDController.PIDResult pidResult;
 
     public void initialize(HardwareMap hm) {
-        drive.init_Drive(hm, Robot.State.TELEOP);
-        sensorBase.init_SensorBase(hm);
+        drive.initDrive(hm, Robot.State.TELEOP);
+        sensorBase.initSensorBase(hm);
     }
 
     private double direction;
