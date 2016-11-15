@@ -17,7 +17,7 @@ public class AutonomousBlue2B extends LinearOpMode {
         while (opModeIsActive()) {
             sequence.run();
             telemetry.addData("gyro", sequence.sensorBase.getAngle());
-            telemetry.addData("step", sequence.curr_step);
+            telemetry.addData("step", sequence.currentStep);
             telemetry.update();
         }
     }

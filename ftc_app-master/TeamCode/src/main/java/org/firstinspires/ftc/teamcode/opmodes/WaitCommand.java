@@ -1,16 +1,17 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.opmodes.Command;
 
 /**
  * Created by Team 2891 on 10/31/2016.
  */
-public class WaitCommand extends Command{
+public class WaitCommand extends Command {
+    private int waitTime;
 
-    private int wait_time;
-
-    public WaitCommand(int wait_time){
-        this.wait_time = wait_time;
+    public WaitCommand(int waitTime){
+        this.waitTime = waitTime;
     }
 
     public void initialize(HardwareMap hm) {
@@ -19,7 +20,7 @@ public class WaitCommand extends Command{
 
     public void run() {
         try {
-            Thread.sleep(wait_time);
+            Thread.sleep(waitTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -27,5 +28,10 @@ public class WaitCommand extends Command{
 
     public boolean isFinished() {
         return true;
+    }
+
+    @Override
+    public void end() {
+
     }
 }

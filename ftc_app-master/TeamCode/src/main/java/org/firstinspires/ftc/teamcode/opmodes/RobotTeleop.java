@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,8 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
  */
 
 @TeleOp(name="Teleop", group = "Linear OpMode")
-public class Robot_Teleop extends LinearOpMode{
-
+public class RobotTeleop extends LinearOpMode{
     //Create subsytem objects
     private DriveTrain drive = DriveTrain.getInstance();
     private Intake intake = Intake.getIntake();
