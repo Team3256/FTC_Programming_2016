@@ -10,14 +10,18 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 /**
  * Created by Team 6696 on 11/11/2016.
  */
-public class Robot {
+public class
+Robot {
     private HardwareMap hardwareMap;
     //time period for updating loop
+
     private ElapsedTime timePeriod = new ElapsedTime();
+
     //subsystems
     public DriveTrain driveTrain = DriveTrain.getInstance();
     public Intake intake = Intake.getIntake();
     public Beacon beacon = Beacon.getBeacon();
+
     //singleton
     private static Robot robot = new Robot();
 
@@ -25,11 +29,9 @@ public class Robot {
 
     }
 
-    public void autonomousInit(HardwareMap hardwareMap, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
-        drive.init(hardwareMap);
-        sensorBase.initSensorBase(hardwareMap);
+    public void autonomousInit(HardwareMap hardwareMap){
+        driveTrain.init(hardwareMap);
         //intake.init_Intake(hardwareMap);
-        sensorBase.resetSensors();
         beacon.init(hardwareMap);
         beacon.initPos();
     }
@@ -67,4 +69,6 @@ public class Robot {
     public boolean isBlue(){
         return driveTrain.isBlue();
     }
+
+    public boolean gyroIsReady() {return driveTrain.gyroIsReady();}
 }

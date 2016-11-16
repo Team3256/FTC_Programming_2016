@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Created by Team 6696 on 11/15/2016.
  */
 public abstract class Subsystem {
+
     public SensorBase sensorBase = SensorBase.getInstance();
     public abstract void init(HardwareMap hardwareMap);
     protected double getAngle(){
@@ -25,4 +26,6 @@ public abstract class Subsystem {
     protected double getOds(){
         return sensorBase.getOds();
     }
+
+    protected boolean gyroIsReady(){ return sensorBase.gyroIsReady();}
 }

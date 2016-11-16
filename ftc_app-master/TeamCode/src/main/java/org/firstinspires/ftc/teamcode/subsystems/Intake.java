@@ -22,6 +22,7 @@ public class Intake {
         this.hardwareMap = hardwareMap;
         intakeMotor = this.hardwareMap.dcMotor.get("intake");
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeMotor.setPower(0);
     }

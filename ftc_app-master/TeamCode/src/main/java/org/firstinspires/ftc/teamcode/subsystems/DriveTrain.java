@@ -24,7 +24,6 @@ public class DriveTrain extends Subsystem{
     }
 
     public void init(HardwareMap hardwareMap){
-
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
@@ -37,13 +36,20 @@ public class DriveTrain extends Subsystem{
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
-        leftFront.setPower(0);
-        leftBack.setPower(0);
-        rightFront.setPower(0);
-        rightBack.setPower(0);
+        //set motors to brake
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        setPower(0);
 
         sensorBase.initSensorBase(hardwareMap);
         sensorBase.resetSensors();
+
+
+        //default is 4000, need to determine this emperially (ticks per second)
+        setMaxSpeed(4000);
     }
 
     public void setMode(DcMotor.RunMode mode){
@@ -77,18 +83,17 @@ public class DriveTrain extends Subsystem{
         rightFront.setTargetPosition(pos);
         leftBack.setTargetPosition(pos);
         rightBack.setTargetPosition(pos);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public boolean isBusy(){
-        return leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy()&& rightBack.isBusy();
+        return leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy();
     }
 
-    public int getTargetPos() {
-        return leftFront.getTargetPosition();
+    public void setMaxSpeed(int ticksPerSec){
+        leftFront.setMaxSpeed(ticksPerSec);
+        rightFront.setMaxSpeed(ticksPerSec);
+        leftBack.setMaxSpeed(ticksPerSec);
+        rightBack.setMaxSpeed(ticksPerSec);
     }
 
     public void arcadeDrive(double throttle, double turn) {
@@ -132,21 +137,33 @@ public class DriveTrain extends Subsystem{
     }
 
     public void setPower(double power){
-        leftFront.setPower(power);
-        leftBack.setPower(power);
-        rightFront.setPower(power);
-        rightBack.setPower(power);
+        runLeft(power);
+        runRight(power);
     }
+
     public void driveToDistance(double inches, double power){
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
         resetEncoders();
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
         while(isBusy()){
-            AutonTest.telemetryPass.addData("Driving " + inches + " inches with power: ", power);
         }
         setPower(0);
     }
+
+    public void driveToLine(double safety_inches, double power){
+        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        resetEncoders();
+        setTargetPos((int) inchesToTicks(safety_inches));
+        setPower(power);
+        while(isBusy()){
+            if (getOds()>0.5){
+                break;
+            }
+        }
+        setPower(0);
+    }
+
     public void turn(double degrees, double power, boolean right){
         double direction = right ? 1 : -1;
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -156,11 +173,25 @@ public class DriveTrain extends Subsystem{
                 break;
             }
             else {
-                DriveTrain drive = DriveTrain.getInstance();
-                drive.runLeft(direction*-power);
-                drive.runRight(direction * power);
-                AutonTest.telemetryPass.addData("Angle: ", sensorBase.getAngle());
+                runLeft(direction* -power);
+                runRight(direction * power);
             }
         }
+        setPower(0);
     }
+
+    public void oneWheelTurn(double degrees, double power, boolean right){
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        resetGyro();
+        while(true){
+            if ((Math.abs(degrees-Math.abs(sensorBase.getAngle()))<2)) {
+                break;
+            }
+            if (right) runRight(power);
+            else if (!right) runLeft(power);
+            else setPower(0);
+        }
+        setPower(0);
+    }
+
 }

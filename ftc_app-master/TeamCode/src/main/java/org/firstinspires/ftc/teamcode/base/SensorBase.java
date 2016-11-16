@@ -71,4 +71,8 @@ public class SensorBase{
     public int getRed() {
         return beaconColorSensor.red();
     }
+
+    public boolean gyroIsReady(){
+        return !gyro.isCalibrating() && gyro.isConnected();
+    }
 }

@@ -86,7 +86,7 @@ public class Beacon extends Subsystem{
         return beacon;
     }
 
-    public void setServoPosition() {
+    public void setServoPosition(boolean stored_blue) {
         if (sensorBase.isBlue()) {
             beacon.setRightBangPos();
             beacon.setLeftNeutralPos();

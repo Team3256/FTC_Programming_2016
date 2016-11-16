@@ -13,13 +13,33 @@ import org.firstinspires.ftc.teamcode.base.Robot;
 public class AutonTest extends LinearOpMode{
 
     Robot robot = Robot.getInstance();
-    public static Telemetry telemetryPass;
+    boolean beac1blue = false, beac2blue = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetryPass = telemetry;
-        robot.teleopInit(hardwareMap);//teleop for now
+        robot.autonomousInit(hardwareMap);
+
+        while(!robot.gyroIsReady()){
+            telemetry.addData("gyro not ready", 1);
+        }
+        telemetry.addData("gyro is ready", 0);
         super.waitForStart();
-        robot.driveTrain.driveToDistance(12, 0.5);
-        robot.driveTrain.turn(90, 0.2, true);
+
+        robot.driveTrain.oneWheelTurn(32,0.15,true);
+        robot.driveTrain.driveToLine(60,0.4);
+        robot.driveTrain.turn(36,0.15,true);
+        robot.driveTrain.driveToDistance(8,0.2);
+        beac1blue = robot.isBlue()?true:false;
+        robot.driveTrain.driveToDistance(-6,0.2);
+        robot.beacon.setServoPosition(beac1blue);
+        robot.driveTrain.driveToDistance(6,0.2);
+        robot.beacon.initPos();
+        robot.driveTrain.turn(80,0.15,false);
+        robot.driveTrain.driveToDistance(40,0.5);
+        robot.driveTrain.driveToLine(24,0.2);
+        robot.driveTrain.turn(80,0.15,true);
+        robot.driveTrain.driveToDistance(8,0.2);
+        beac2blue = robot.isBlue()?true:false;
+        robot.driveTrain.driveToDistance(-6,0.2);
+        robot.driveTrain.driveToDistance(6,0.2);
     }
 }
