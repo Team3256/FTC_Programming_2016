@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.base.SensorBase;
+import org.firstinspires.ftc.teamcode.base.Subsystem;
+
 /**
  * Created by Team 6696 on 11/11/2016.
  */
-public class Beacon {
-    private HardwareMap hardwareMap;
+public class Beacon extends Subsystem{
     private Servo leftDonger, rightDonger;
     private double leftPos = 0;
     private double rightPos = 1;
@@ -18,8 +20,7 @@ public class Beacon {
 
     }
 
-    public void initBeacon(HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
+    public void init(HardwareMap hardwareMap) {
         leftDonger = hardwareMap.servo.get("leftDonger");
         rightDonger = hardwareMap.servo.get("rightDonger");
     }
@@ -83,5 +84,15 @@ public class Beacon {
 
     public static Beacon getBeacon() {
         return beacon;
+    }
+
+    public void setServoPosition() {
+        if (sensorBase.isBlue()) {
+            beacon.setRightBangPos();
+            beacon.setLeftNeutralPos();
+        } else {
+            beacon.setRightNeutralPos();
+            beacon.setLeftBangPos();
+        }
     }
 }

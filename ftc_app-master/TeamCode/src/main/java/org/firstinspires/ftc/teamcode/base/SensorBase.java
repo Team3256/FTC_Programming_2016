@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 /**
  * Created by Team 6696 on 11/11/2016.
  */
-public class SensorBase {
+public class SensorBase{
     private DeviceInterfaceModule deviceInterfaceModule;
     //sensors
     private AHRS gyro;

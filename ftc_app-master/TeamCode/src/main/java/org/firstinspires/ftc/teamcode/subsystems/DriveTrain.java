@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Robot;
+import org.firstinspires.ftc.teamcode.base.Subsystem;
+import org.firstinspires.ftc.teamcode.opmodes.AutonTest;
 
 /**
  * Created by Team 6696 on 11/11/2016.
  */
-public class DriveTrain {
-    private HardwareMap hardwareMap;
+public class DriveTrain extends Subsystem{
     //motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
     //singleton
@@ -22,39 +23,27 @@ public class DriveTrain {
 
     }
 
-    public void initDrive(HardwareMap hardwareMap, Robot.State state){
-        //Choose what motor mode to run in: Encoder or No Encoder
-        DcMotor.RunMode mode;
-
-        if (state.equals(Robot.State.AUTONOMOUS))
-            mode = DcMotor.RunMode.RUN_TO_POSITION;
-        else
-            mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-
-        //initialize the hardware map
-        this.hardwareMap = hardwareMap;
+    public void init(HardwareMap hardwareMap){
 
         //initialize the motors
-        leftFront = this.hardwareMap.dcMotor.get("leftFront");
-        leftBack = this.hardwareMap.dcMotor.get("leftBack");
-        rightFront = this.hardwareMap.dcMotor.get("rightFront");
-        rightBack = this.hardwareMap.dcMotor.get("rightBack");
+        leftFront = hardwareMap.dcMotor.get("leftFront");
+        leftBack = hardwareMap.dcMotor.get("leftBack");
+        rightFront = hardwareMap.dcMotor.get("rightFront");
+        rightBack = hardwareMap.dcMotor.get("rightBack");
 
         //set motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-        //set motor mode
-        leftFront.setMode(mode);
-        leftBack.setMode(mode);
-        rightFront.setMode(mode);
-        rightBack.setMode(mode);
 
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
+
+        sensorBase.initSensorBase(hardwareMap);
+        sensorBase.resetSensors();
     }
 
     public void setMode(DcMotor.RunMode mode){
@@ -92,6 +81,10 @@ public class DriveTrain {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public boolean isBusy(){
+        return leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy()&& rightBack.isBusy();
     }
 
     public int getTargetPos() {
@@ -134,23 +127,40 @@ public class DriveTrain {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public DcMotor getLeftFront() {
-        return leftFront;
-    }
-
-    public DcMotor getLeftBack() {
-        return leftBack;
-    }
-
-    public DcMotor getRightFront() {
-        return rightFront;
-    }
-
-    public DcMotor getRightBack() {
-        return rightBack;
-    }
-
     public static DriveTrain getInstance() {
         return driveTrain;
+    }
+
+    public void setPower(double power){
+        leftFront.setPower(power);
+        leftBack.setPower(power);
+        rightFront.setPower(power);
+        rightBack.setPower(power);
+    }
+    public void driveToDistance(double inches, double power){
+        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        resetEncoders();
+        setTargetPos((int) inchesToTicks(inches));
+        setPower(power);
+        while(isBusy()){
+            AutonTest.telemetryPass.addData("Driving " + inches + " inches with power: ", power);
+        }
+        setPower(0);
+    }
+    public void turn(double degrees, double power, boolean right){
+        double direction = right ? 1 : -1;
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        resetGyro();
+        while(true){
+            if ((Math.abs(degrees-Math.abs(sensorBase.getAngle()))<2)){
+                break;
+            }
+            else {
+                DriveTrain drive = DriveTrain.getInstance();
+                drive.runLeft(direction*-power);
+                drive.runRight(direction * power);
+                AutonTest.telemetryPass.addData("Angle: ", sensorBase.getAngle());
+            }
+        }
     }
 }

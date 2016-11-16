@@ -12,21 +12,12 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
  */
 public class Robot {
     private HardwareMap hardwareMap;
-
-    public enum State {
-        DISABLED,
-        AUTONOMOUS,
-        TELEOP
-    }
-    //state of the robot
-    private State state = State.DISABLED;
     //time period for updating loop
     private ElapsedTime timePeriod = new ElapsedTime();
     //subsystems
-    private DriveTrain driveTrain;
-    private Intake intake;
-    private SensorBase sensorBase;
-    private Beacon beacon;
+    public DriveTrain driveTrain = DriveTrain.getInstance();
+    public Intake intake = Intake.getIntake();
+    public Beacon beacon = Beacon.getBeacon();
     //singleton
     private static Robot robot = new Robot();
 
@@ -34,32 +25,20 @@ public class Robot {
 
     }
 
-    public void robotInit(HardwareMap hardwareMap, DriveTrain driveTrain, Intake intake, Beacon beacon, SensorBase sensorBase, String key){
-        this.hardwareMap = hardwareMap;
-        if (key.equals("autonomous"))
-            autonomousInit(hardwareMap, driveTrain, intake, beacon, sensorBase);
-        if (key.equals("teleop"))
-            teleopInit(hardwareMap, driveTrain, intake, beacon, sensorBase);
-    }
-
     public void autonomousInit(HardwareMap hardwareMap, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
-        state = State.AUTONOMOUS;
-        drive.initDrive(hardwareMap, state);
+        drive.init(hardwareMap);
         sensorBase.initSensorBase(hardwareMap);
         //intake.init_Intake(hardwareMap);
         sensorBase.resetSensors();
-        beacon.initBeacon(hardwareMap);
+        beacon.init(hardwareMap);
         beacon.initPos();
     }
 
-    public void teleopInit(HardwareMap hardwareMap, DriveTrain drive, Intake intake, Beacon beacon, SensorBase sensorBase){
-        state = State.TELEOP;
-        drive.initDrive(hardwareMap, state);
+    public void teleopInit(HardwareMap hardwareMap){
+        driveTrain.init(hardwareMap);
         //intake.init_Intake(hm);
-        beacon.initBeacon(hardwareMap);
+        beacon.init(hardwareMap);
         beacon.initPos();
-        sensorBase.initSensorBase(hardwareMap);
-        sensorBase.resetSensors();
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {
@@ -71,5 +50,21 @@ public class Robot {
 
     public static Robot getInstance() {
         return robot;
+    }
+
+    public double getAngle(){
+        return driveTrain.getAngle();
+    }
+
+    public double getBlue(){
+        return driveTrain.getBlue();
+    }
+
+    public double getOds(){
+        return driveTrain.getOds();
+    }
+
+    public boolean isBlue(){
+        return driveTrain.isBlue();
     }
 }
