@@ -28,4 +28,8 @@ public abstract class Subsystem {
     }
 
     protected boolean gyroIsReady(){ return sensorBase.gyroIsReady();}
+
+    public double getPitch(){
+        return sensorBase.getPitch();
+    }
 }

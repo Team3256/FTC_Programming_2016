@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.base.Robot;
 /**
  * Created by Team 6696 on 11/15/2016.
  */
-@Autonomous(name = "auton")
-public class AutonTest extends LinearOpMode{
+@Autonomous(name = "AutoBlueBeacons")
+public class AutoBlueBeacons extends LinearOpMode{
 
     private Robot robot = Robot.getInstance();
     private boolean beac1blue = false, beac2blue = false;
@@ -33,7 +33,7 @@ public class AutonTest extends LinearOpMode{
         telemetry.addData("beaconisblue", robot.isBlue());
         robot.driveTrain.oneWheelTurn(31, 0.22, true);
         robot.driveTrain.driveToLine(60, 0.9);
-        robot.driveTrain.driveToDistance(2, 0.4);
+        robot.driveTrain.driveToDistance(1, 0.4);
         robot.driveTrain.turn(38,0.15,true);
         beac1blue = robot.isBlue();
         robot.driveTrain.driveToDistance(3, 0.4);

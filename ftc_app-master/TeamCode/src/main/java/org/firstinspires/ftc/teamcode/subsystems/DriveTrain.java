@@ -9,7 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Robot;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutonTest;
+import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
+import org.firstinspires.ftc.teamcode.opmodes.AutoBlueDefense;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -26,7 +27,8 @@ public class DriveTrain extends Subsystem{
     }
 
     public void init(HardwareMap hardwareMap){
-        telemetry = AutonTest.telemetryPass;
+        //telemetry = AutoBlueBeacons.telemetryPass;
+        telemetry = AutoBlueDefense.telemetryPass;
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
@@ -151,8 +153,19 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
         while(isBusy()){
-            telemetry.addData("distance", (getLeftEncoderValue() + getRightEncoderValue()) / 2D);
+            telemetry.addData("distance", (getLeftEncoderValue() + getRightEncoderValue()) / 2);
             telemetry.update();
+        }
+        setPower(0);
+    }
+
+    public void driveToRamp(double safety_inches, double power){
+        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        resetEncoders();
+        setTargetPos((int) inchesToTicks(safety_inches));
+        setPower(power);
+        while(isBusy()){
+            if (getPitch()>28) break;
         }
         setPower(0);
     }
@@ -175,16 +188,16 @@ public class DriveTrain extends Subsystem{
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         resetGyro();
         while(true){
+            telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
+            telemetry.update();
             if ((Math.abs(degrees - Math.abs(sensorBase.getAngle())) < 2)){
                 runLeft(0);
                 runRight(0);
                 break;
             }
             else {
-                runLeft(direction* -power);
+                runLeft(direction * -power);
                 runRight(direction * power);
-                telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
-                telemetry.update();
             }
         }
         setPower(0);

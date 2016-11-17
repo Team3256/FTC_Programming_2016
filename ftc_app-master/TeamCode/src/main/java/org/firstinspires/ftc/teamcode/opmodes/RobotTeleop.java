@@ -61,9 +61,8 @@ public class RobotTeleop extends LinearOpMode{
             telemetry.addData("blue val", robot.getBlue());
 
             telemetry.addData("angle", robot.getAngle());
-            telemetry.addData("leftBeac", robot.beacon.getLeftPos());
-            telemetry.addData("rightBeac", robot.beacon.getRightPos());
             telemetry.addData("ticks", robot.driveTrain.getLeftEncoderValue() + " " + robot.driveTrain.getRightEncoderValue());
+            telemetry.addData("gyroPitch", robot.getPitch());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);

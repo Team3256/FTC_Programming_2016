@@ -71,4 +71,8 @@ Robot {
     }
 
     public boolean gyroIsReady() {return driveTrain.gyroIsReady();}
+
+    public double getPitch(){
+        return driveTrain.getPitch();
+    }
 }

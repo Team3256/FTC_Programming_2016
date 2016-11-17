@@ -48,6 +48,14 @@ public class SensorBase{
         return gyro.getYaw();
     }
 
+    public double getPitch() {
+        return gyro.getPitch();
+    }
+
+    public double getRoll() {
+        return gyro.getRoll();
+    }
+
     public void resetGyro() {
         gyro.zeroYaw();
     }
@@ -75,4 +83,5 @@ public class SensorBase{
     public boolean gyroIsReady(){
         return !gyro.isCalibrating() && gyro.isConnected();
     }
+
 }

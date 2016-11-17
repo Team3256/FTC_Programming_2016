@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.SensorBase;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutonTest;
+import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -24,7 +24,7 @@ public class Beacon extends Subsystem{
     }
 
     public void init(HardwareMap hardwareMap) {
-        telemetry = AutonTest.telemetryPass;
+        telemetry = AutoBlueBeacons.telemetryPass;
         leftDonger = hardwareMap.servo.get("leftDonger");
         rightDonger = hardwareMap.servo.get("rightDonger");
     }
