@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.base;
 
 /**
- * Created by Team 2891 on 9/17/2016.
+ * Created by Team 6696 on 11/11/2016.
  */
 public class Constants {
-
     public static final int GYRO_I2C_PORT = 1;
     public static final byte NAVX_GYRO_UPDATE_HZ = 50;
     public static final double DRIVE_DISTANCE = 24;
