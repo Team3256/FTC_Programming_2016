@@ -12,7 +12,7 @@ public class Intake {
 
     private DcMotor intakeMotor;
     //singleton
-    private static Intake intake;
+    private static Intake intake = new Intake();
 
     private Intake() {
 

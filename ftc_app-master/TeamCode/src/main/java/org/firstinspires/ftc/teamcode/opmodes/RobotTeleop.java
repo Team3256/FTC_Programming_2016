@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Beacon;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
+import java.util.concurrent.TimeoutException;
+
 /**
  * Created by Team 2891 on 9/16/2016.
  */
@@ -61,6 +63,7 @@ public class RobotTeleop extends LinearOpMode{
             telemetry.addData("angle", robot.getAngle());
             telemetry.addData("leftBeac", robot.beacon.getLeftPos());
             telemetry.addData("rightBeac", robot.beacon.getRightPos());
+            telemetry.addData("ticks", robot.driveTrain.getLeftEncoderValue() + " " + robot.driveTrain.getRightEncoderValue());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);

@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.SensorBase;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
+import org.firstinspires.ftc.teamcode.opmodes.AutonTest;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -15,12 +17,14 @@ public class Beacon extends Subsystem{
     private double rightPos = 1;
     //singleton
     private static Beacon beacon = new Beacon();
+    private static Telemetry telemetry;
 
     private Beacon() {
 
     }
 
     public void init(HardwareMap hardwareMap) {
+        telemetry = AutonTest.telemetryPass;
         leftDonger = hardwareMap.servo.get("leftDonger");
         rightDonger = hardwareMap.servo.get("rightDonger");
     }
@@ -87,12 +91,15 @@ public class Beacon extends Subsystem{
     }
 
     public void setServoPosition(boolean stored_blue) {
+        telemetry.addData("blue", sensorBase.isBlue());
+        telemetry.addData("blueval", sensorBase.getBlue());
+        telemetry.update();
         if (sensorBase.isBlue()) {
-            beacon.setRightBangPos();
-            beacon.setLeftNeutralPos();
-        } else {
             beacon.setRightNeutralPos();
             beacon.setLeftBangPos();
+        } else {
+            beacon.setRightBangPos();
+            beacon.setLeftNeutralPos();
         }
     }
 }

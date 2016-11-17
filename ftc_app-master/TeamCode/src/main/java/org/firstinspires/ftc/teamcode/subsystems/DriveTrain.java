@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Robot;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
@@ -18,12 +19,14 @@ public class DriveTrain extends Subsystem{
     private DcMotor leftFront, leftBack, rightFront, rightBack;
     //singleton
     private static DriveTrain driveTrain = new DriveTrain();
+    private static Telemetry telemetry;
 
     private DriveTrain() {
 
     }
 
     public void init(HardwareMap hardwareMap){
+        telemetry = AutonTest.telemetryPass;
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
@@ -46,10 +49,11 @@ public class DriveTrain extends Subsystem{
 
         sensorBase.initSensorBase(hardwareMap);
         sensorBase.resetSensors();
+        resetEncoders();
 
 
-        //default is 4000, need to determine this emperially (ticks per second)
-        setMaxSpeed(4000);
+        //default is 4000, need to determine this emperically (ticks per second)
+        setMaxSpeed(2100);
     }
 
     public void setMode(DcMotor.RunMode mode){
@@ -147,6 +151,8 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
         while(isBusy()){
+            telemetry.addData("distance", (getLeftEncoderValue() + getRightEncoderValue()) / 2D);
+            telemetry.update();
         }
         setPower(0);
     }
@@ -169,12 +175,16 @@ public class DriveTrain extends Subsystem{
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         resetGyro();
         while(true){
-            if ((Math.abs(degrees-Math.abs(sensorBase.getAngle()))<2)){
+            if ((Math.abs(degrees - Math.abs(sensorBase.getAngle())) < 2)){
+                runLeft(0);
+                runRight(0);
                 break;
             }
             else {
                 runLeft(direction* -power);
                 runRight(direction * power);
+                telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
+                telemetry.update();
             }
         }
         setPower(0);
@@ -184,12 +194,15 @@ public class DriveTrain extends Subsystem{
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         resetGyro();
         while(true){
-            if ((Math.abs(degrees-Math.abs(sensorBase.getAngle()))<2)) {
+            if ((Math.abs(degrees - Math.abs(sensorBase.getAngle())) < 2)) {
+                runLeft(0);
+                runRight(0);
                 break;
             }
+            telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
+            telemetry.update();
             if (right) runRight(power);
-            else if (!right) runLeft(power);
-            else setPower(0);
+            else runLeft(power);
         }
         setPower(0);
     }
