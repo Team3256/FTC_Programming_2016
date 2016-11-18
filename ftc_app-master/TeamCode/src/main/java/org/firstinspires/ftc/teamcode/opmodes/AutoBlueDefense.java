@@ -32,9 +32,9 @@ public class AutoBlueDefense extends LinearOpMode {
         super.waitForStart();
 
         //sleep(15 * 1000);
-        robot.driveTrain.driveToDistance(60, 0.8);
+        robot.driveTrain.driveToDistance(60, 0.8,true);
         sleep(1000);
-        robot.driveTrain.turn(45, 0.23, true);
+        robot.driveTrain.turn(45,0.23, true);
         sleep(1000);
         robot.driveTrain.driveToRamp(70,0.8);
     }

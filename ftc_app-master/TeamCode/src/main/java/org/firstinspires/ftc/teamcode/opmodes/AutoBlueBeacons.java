@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.base.Robot;
 public class AutoBlueBeacons extends LinearOpMode{
 
     private Robot robot = Robot.getInstance();
-    private boolean beac1blue = false, beac2blue = false;
     public static Telemetry telemetryPass;
     
     @Override
@@ -27,28 +26,36 @@ public class AutoBlueBeacons extends LinearOpMode{
         }
         telemetry.addData("gyro is ready", "");
         telemetry.addData("color sens is ready", robot.getBlue());
+        telemetry.addData("ods", robot.getOds());
         telemetry.update();
+        //wait for play button
         super.waitForStart();
-        telemetry.addData("beac blue val", robot.getBlue());
-        telemetry.addData("beaconisblue", robot.isBlue());
-        robot.driveTrain.oneWheelTurn(31, 0.22, true);
+        //one wheel turn towards beacon
+        robot.driveTrain.oneWheelTurn(34, 0.275, true);
+        //drive to white line
         robot.driveTrain.driveToLine(60, 0.9);
-        robot.driveTrain.driveToDistance(1, 0.4);
-        robot.driveTrain.turn(38,0.15,true);
-        beac1blue = robot.isBlue();
-        robot.driveTrain.driveToDistance(3, 0.4);
-        robot.beacon.setServoPosition(beac1blue);
-        /*
-        robot.driveTrain.driveToDistance(6,0.2);
+        //wait half a second
+        //drive a tiny bit forward so we are centered when we turn
+        robot.driveTrain.driveToDistance(2.75, 0.4, true);
+        //wait half a second
+        //turn to the beacon
+        robot.driveTrain.turn(37,0.25,true);
+        //drive forward to see color sensor
+        //hit beacon
+        robot.driveTrain.driveToDistance(8,0.35, true);
+        //drive backward
+        robot.driveTrain.driveToDistance(6,0.5, false);
+
         robot.beacon.initPos();
-        robot.driveTrain.turn(80,0.15,false);
-        robot.driveTrain.driveToDistance(40,0.5);
-        robot.driveTrain.driveToLine(24,0.2);
-        robot.driveTrain.turn(80,0.15,true);
-        robot.driveTrain.driveToDistance(8,0.2);
+        robot.driveTrain.turn(77,0.4,false);
+        robot.driveTrain.driveToDistance(40,0.8,true);
+        robot.driveTrain.driveToLine(12,0.6);
+        robot.driveTrain.driveToDistance(2.5,0.4,true);
+        robot.driveTrain.turn(80,0.3,true);
+        robot.driveTrain.driveToDistance(8,0.35,true);
+        /*
         beac2blue = robot.isBlue();
         robot.driveTrain.driveToDistance(-6,0.2);
         robot.driveTrain.driveToDistance(6,0.2);*/
-        sleep(10000);
     }
 }

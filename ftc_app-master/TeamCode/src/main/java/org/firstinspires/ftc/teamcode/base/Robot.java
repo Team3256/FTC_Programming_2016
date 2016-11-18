@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.base;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,6 +39,7 @@ Robot {
 
     public void teleopInit(HardwareMap hardwareMap){
         driveTrain.init(hardwareMap);
+        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //intake.init_Intake(hm);
         beacon.init(hardwareMap);
         beacon.initPos();

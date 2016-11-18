@@ -90,7 +90,7 @@ public class Beacon extends Subsystem{
         return beacon;
     }
 
-    public void setServoPosition(boolean stored_blue) {
+    public void setServoPosition() {
         telemetry.addData("blue", sensorBase.isBlue());
         telemetry.addData("blueval", sensorBase.getBlue());
         telemetry.update();
