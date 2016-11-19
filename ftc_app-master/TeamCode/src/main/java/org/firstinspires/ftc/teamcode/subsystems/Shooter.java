@@ -9,18 +9,19 @@ import org.firstinspires.ftc.teamcode.base.Subsystem;
 /**
  * Created by Eric on 11/15/2016.
  */
-public class FlyWheel extends Subsystem {
-    private static FlyWheel flyWheel= new FlyWheel();
+public class Shooter extends Subsystem {
+    private static Shooter shooter = new Shooter();
 
-    private FlyWheel(){
+    private Shooter(){
 
     }
 
-    public static FlyWheel getInstance(){
-        return flyWheel;
+    public static Shooter getInstance(){
+        return shooter;
     }
 
     private DcMotor leftFly, rightFly;
+    private DcMotor intake;
 
     @Override
     public void init(HardwareMap hardwareMap) {
@@ -37,5 +38,19 @@ public class FlyWheel extends Subsystem {
         rightFly.setMaxSpeed(4000);
         leftFly.setPower(0);
         rightFly.setPower(0);
+
+        intake = hardwareMap.dcMotor.get("intake");
+        intake.setDirection(DcMotor.Direction.FORWARD);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setPower(0);
+    }
+
+    public void intakeBall() {
+        intake.setPower(0.5);
+    }
+
+    public void outputBall() {
+        intake.setPower(-0.5);
     }
 }

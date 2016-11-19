@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Beacon;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -20,7 +20,7 @@ Robot {
 
     //subsystems
     public DriveTrain driveTrain = DriveTrain.getInstance();
-    public Intake intake = Intake.getIntake();
+    public Shooter shooter = Shooter.getInstance();
     public Beacon beacon = Beacon.getBeacon();
 
     //singleton
@@ -62,6 +62,10 @@ Robot {
 
     public double getBlue(){
         return driveTrain.getBlue();
+    }
+
+    public double getRed() {
+        return driveTrain.getRed();
     }
 
     public double getOds(){

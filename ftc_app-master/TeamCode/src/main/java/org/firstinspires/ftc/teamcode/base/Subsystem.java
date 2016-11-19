@@ -19,6 +19,10 @@ public abstract class Subsystem {
         return sensorBase.getBlue();
     }
 
+    protected int getRed() {
+        return sensorBase.getRed();
+    }
+
     protected  boolean isBlue(){
         return sensorBase.isBlue();
     }

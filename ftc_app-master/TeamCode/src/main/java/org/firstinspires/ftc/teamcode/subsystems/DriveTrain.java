@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Constants;
-import org.firstinspires.ftc.teamcode.base.Robot;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueDefense;
+import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -28,7 +25,7 @@ public class DriveTrain extends Subsystem{
 
     public void init(HardwareMap hardwareMap){
         //telemetry = AutoBlueBeacons.telemetryPass;
-        telemetry = AutoBlueBeacons.telemetryPass;
+        telemetry = TelemetryHolder.telemetry;
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
@@ -128,6 +125,10 @@ public class DriveTrain extends Subsystem{
         return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2;
     }
 
+    public double getAverageEncoderValue(){
+        return (getLeftEncoderValue() + getRightEncoderValue()) / 2;
+    }
+
     public void resetEncoders(){
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -176,8 +177,8 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
         while(isBusy()){
-            if (inchesToTicks(inches)<=Math.abs(getLeftEncoderValue()+getRightEncoderValue())/2) break;
-            telemetry.addData("distance", (getLeftEncoderValue() + getRightEncoderValue()) / 2);
+            if (inchesToTicks(inches)<=Math.abs(getAverageEncoderValue())) break;
+            telemetry.addData("distance", ticksToInches(Math.abs(getAverageEncoderValue())));
             telemetry.addData("angle", getAngle());
             telemetry.update();
         }
@@ -204,8 +205,8 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(safety_inches));
         setPower(power);
         while(isBusy()){
+            telemetry.addData("driving to line", "");
             if (getOds()>0.5){
-                telemetry.addData("driving to line", "");
                 break;
             }
         }
@@ -219,7 +220,7 @@ public class DriveTrain extends Subsystem{
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         try {
             resetGyro();
-            Thread.sleep(1000);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

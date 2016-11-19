@@ -4,12 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
-import org.firstinspires.ftc.teamcode.base.SensorBase;
-import org.firstinspires.ftc.teamcode.subsystems.Beacon;
-import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Team 2891 on 9/16/2016.
@@ -24,6 +18,8 @@ public class RobotTeleop extends LinearOpMode{
     //doubles for joystick values
     double left1 = 0, right1 = 0;
     boolean intake_button = false, outtake_button = false;
+    boolean prev_intake_button = false, prev_outtake_button = false;
+    boolean intake_toggle = false, outtake_toggle = false;
     boolean x_button = false, y_button = false;
 
     /**
@@ -42,19 +38,33 @@ public class RobotTeleop extends LinearOpMode{
             right1 = -gamepad1.right_stick_x;
             intake_button = gamepad1.right_bumper;
             outtake_button = gamepad1.left_bumper;
+
+            if (intake_button && !prev_intake_button) {
+                if (!intake_toggle) {
+                    robot.beacon.setRightBangPos();
+                    intake_toggle = true;
+                } else {
+                    robot.beacon.setRightNeutralPos();
+                    intake_toggle = false;
+                }
+            }
+
+            if (outtake_button && !prev_outtake_button) {
+                if (!outtake_toggle) {
+                    robot.beacon.setLeftBangPos();
+                    outtake_toggle = true;
+                } else {
+                    robot.beacon.setLeftNeutralPos();
+                    outtake_toggle = false;
+                }
+            }
+
+            prev_intake_button = intake_button;
+            prev_outtake_button = outtake_button;
+
             x_button = gamepad1.x;
             y_button = gamepad1.y;
             robot.driveTrain.arcadeDrive(left1,right1);
-            if (outtake_button){
-                robot.beacon.setLeftBangPos();
-            }
-            else robot.beacon.setLeftNeutralPos();
-
-            if (intake_button){
-                robot.beacon.setRightBangPos();
-            }
-            else robot.beacon.setRightNeutralPos();
-
 
             telemetry.addData("ods", robot.getOds());
             telemetry.addData("blue", robot.isBlue());

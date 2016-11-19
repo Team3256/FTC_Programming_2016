@@ -68,6 +68,10 @@ public class SensorBase{
         return beaconColorSensor.blue() >= 2 && beaconColorSensor.blue()!=255;
     }
 
+    public boolean isRed() {
+        return beaconColorSensor.red() >= 2 && beaconColorSensor.red() != 255;
+    }
+
     public void disableBeaconLED() {
         beaconColorSensor.enableLed(false);
     }

@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.base.SensorBase;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
+import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
 /**
  * Created by Team 6696 on 11/11/2016.
@@ -24,7 +23,7 @@ public class Beacon extends Subsystem{
     }
 
     public void init(HardwareMap hardwareMap) {
-        telemetry = AutoBlueBeacons.telemetryPass;
+        telemetry = TelemetryHolder.telemetry;
         leftDonger = hardwareMap.servo.get("leftDonger");
         rightDonger = hardwareMap.servo.get("rightDonger");
     }
@@ -90,11 +89,23 @@ public class Beacon extends Subsystem{
         return beacon;
     }
 
-    public void setServoPosition() {
+    public void updateServoPositionBlue() {
         telemetry.addData("blue", sensorBase.isBlue());
         telemetry.addData("blueval", sensorBase.getBlue());
         telemetry.update();
         if (sensorBase.isBlue()) {
+            beacon.setRightNeutralPos();
+            beacon.setLeftBangPos();
+        } else {
+            beacon.setRightBangPos();
+            beacon.setLeftNeutralPos();
+        }
+    }
+    public void updateServoPositionRed() {
+        telemetry.addData("red", sensorBase.isRed());
+        telemetry.addData("redval", sensorBase.getRed());
+        telemetry.update();
+        if (sensorBase.isRed()) {
             beacon.setRightNeutralPos();
             beacon.setLeftBangPos();
         } else {
