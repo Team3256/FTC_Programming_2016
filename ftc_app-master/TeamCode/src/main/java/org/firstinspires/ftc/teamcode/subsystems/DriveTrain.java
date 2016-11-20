@@ -9,9 +9,6 @@ import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
 import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
 public class DriveTrain extends Subsystem{
     //motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
@@ -99,12 +96,19 @@ public class DriveTrain extends Subsystem{
         rightBack.setMaxSpeed(ticksPerSec);
     }
 
-    public void arcadeDrive(double throttle, double turn) {
+    public void arcadeDrive(double throttle, double turn, boolean reverse, boolean slow) {
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         throttle = Range.clip(throttle, -1, 1);
         turn = Range.clip(turn, -1, 1);
+        if (reverse) {
+            throttle = -throttle;
+        }
         double left = throttle - turn;
         double right = throttle + turn;
+        if (slow){
+            left/=2;
+            right/=2;
+        }
         runLeft(left);
         runRight(right);
     }
@@ -118,11 +122,11 @@ public class DriveTrain extends Subsystem{
     }
 
     public double getRightEncoderValue(){
-        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2;
+        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2D;
     }
 
     public double getLeftEncoderValue(){
-        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2;
+        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2D;
     }
 
     public double getAverageEncoderValue(){
@@ -194,7 +198,7 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(safety_inches));
         setPower(power);
         while(isBusy()){
-            if (getPitch()>28) break;
+            if (getPitch()>=28) break;
         }
         setPower(0);
     }
@@ -206,7 +210,7 @@ public class DriveTrain extends Subsystem{
         setPower(power);
         while(isBusy()){
             telemetry.addData("driving to line", "");
-            if (getOds()>0.5){
+            if (getOds()>=0.5){
                 break;
             }
         }

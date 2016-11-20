@@ -8,11 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Beacon;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
-public class
-Robot {
+public class Robot {
     private HardwareMap hardwareMap;
     //time period for updating loop
 
@@ -32,7 +28,7 @@ Robot {
 
     public void autonomousInit(HardwareMap hardwareMap){
         driveTrain.init(hardwareMap);
-        //intake.init_Intake(hardwareMap);
+        shooter.init(hardwareMap);
         beacon.init(hardwareMap);
         beacon.initPos();
     }
@@ -40,7 +36,7 @@ Robot {
     public void teleopInit(HardwareMap hardwareMap){
         driveTrain.init(hardwareMap);
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //intake.init_Intake(hm);
+        shooter.init(hardwareMap);
         beacon.init(hardwareMap);
         beacon.initPos();
     }

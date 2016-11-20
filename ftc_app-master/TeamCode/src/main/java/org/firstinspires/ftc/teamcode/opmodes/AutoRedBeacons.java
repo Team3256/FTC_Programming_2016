@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Robot;
 
-/**
- * Created by Team 6696 on 11/15/2016.
- */
 @Autonomous(name = "AutoRedBeacons")
 public class AutoRedBeacons extends LinearOpMode{
     private Robot robot = Robot.getInstance();

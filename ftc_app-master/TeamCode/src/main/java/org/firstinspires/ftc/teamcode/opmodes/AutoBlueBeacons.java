@@ -5,9 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
 
-/**
- * Created by Team 6696 on 11/15/2016.
- */
 @Autonomous(name = "AutoBlueBeacons")
 public class AutoBlueBeacons extends LinearOpMode{
     private Robot robot = Robot.getInstance();

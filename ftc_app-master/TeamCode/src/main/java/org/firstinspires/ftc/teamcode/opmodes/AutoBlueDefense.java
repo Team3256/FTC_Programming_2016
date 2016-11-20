@@ -5,9 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
 
-/**
- * Created by Team 2891 on 11/16/2016.
- */
 @Autonomous(name = "AutoBlueDefense")
 public class AutoBlueDefense extends LinearOpMode {
     private Robot robot = Robot.getInstance();
@@ -18,10 +15,10 @@ public class AutoBlueDefense extends LinearOpMode {
         robot.autonomousInit(hardwareMap);
 
         while(!robot.gyroIsReady()){
-            telemetry.addData("gyro not ready", "");
+            telemetry.addData("gyro ready", "no");
             telemetry.update();
         }
-        telemetry.addData("gyro is ready", "");
+        telemetry.addData("gyro ready", "yes");
         telemetry.update();
 
         super.waitForStart();

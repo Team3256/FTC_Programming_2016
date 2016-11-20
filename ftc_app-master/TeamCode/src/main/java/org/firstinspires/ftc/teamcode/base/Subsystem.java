@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode.base;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-/**
- * Created by Team 6696 on 11/15/2016.
- */
 public abstract class Subsystem {
 
     public SensorBase sensorBase = SensorBase.getInstance();
