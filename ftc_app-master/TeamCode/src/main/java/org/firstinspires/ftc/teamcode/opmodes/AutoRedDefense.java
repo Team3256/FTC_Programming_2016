@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
 
-@Autonomous(name = "AutoBlueDefense")
-public class AutoBlueDefense extends LinearOpMode {
+@Autonomous(name = "AutoRedDefense")
+public class AutoRedDefense extends LinearOpMode {
     private Robot robot = Robot.getInstance();
 
     @Override
@@ -26,7 +26,7 @@ public class AutoBlueDefense extends LinearOpMode {
         //sleep(15 * 1000);
         robot.driveTrain.driveToDistance(60, 0.8,true);
         sleep(1000);
-        robot.driveTrain.turn(80,0.23, true);
+        robot.driveTrain.turn(80,0.23, false);
         sleep(1000);
         robot.driveTrain.driveToRamp(70,0.8);
     }

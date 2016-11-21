@@ -5,15 +5,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
 
-@TeleOp(name="Teleop", group = "Linear OpMode")
-public class RobotTeleop extends LinearOpMode{
+@TeleOp(name="Test", group = "Linear OpMode")
+public class TestTeleop extends LinearOpMode{
     //Create subsystem objects
     //Create robot object
     private Robot robot = Robot.getInstance();
 
     //doubles for joystick values
     double left1 = 0, right1 = 0;
-    boolean a2 = false, y2 = false;/*
+    boolean a2 = false, y2 = false;
+    boolean x2 = false, b2 = false;
+    /*
     boolean prev_intake_button = false, prev_outtake_button = false;
     boolean intake_toggle = false, outtake_toggle = false;*/
     boolean right_bumper1 = false, left_bumper1 = false;
@@ -32,11 +34,12 @@ public class RobotTeleop extends LinearOpMode{
         while(opModeIsActive()) {
             left1 = -gamepad1.left_stick_y;
             right1 = -gamepad1.right_stick_x;
-            a2 = gamepad2.a;
-            y2 = gamepad2.y;
+            a2 = gamepad1.a;
+            y2 = gamepad1.y;
+            x2 = gamepad1.x;
+            b2 = gamepad1.b;
             left_bumper1 = gamepad1.left_bumper;
             right_bumper1 = gamepad1.right_bumper;
-            right_trigger1 = gamepad2.right_trigger;
             /*
             if (intake_button && !prev_intake_button) {
                 if (!intake_toggle) {
@@ -63,26 +66,8 @@ public class RobotTeleop extends LinearOpMode{
             */
             //left, right, reverse, slow
 
-            robot.driveTrain.arcadeDrive(left1,right1,right_bumper1,left_bumper1);
 
-            if (a2){
-                robot.shooter.intakeBall();
-            }
-            else if (y2){
-                robot.shooter.outtakeBall();
-            }
-            else{
-                robot.shooter.stopIntake();
-            }
 
-            if (right_trigger1>0.5){
-                robot.shooter.releaseBall();
-                robot.shooter.runFly(.315);
-            }
-            else{
-                robot.shooter.holdBall();
-                robot.shooter.stopFly();
-            }
 
 
             telemetry.addData("ods", robot.getOds());
@@ -91,6 +76,8 @@ public class RobotTeleop extends LinearOpMode{
 
             telemetry.addData("angle", robot.getAngle());
             telemetry.addData("ticks", robot.driveTrain.getLeftEncoderValue() + " " + robot.driveTrain.getRightEncoderValue());
+            telemetry.addData("leftBeacon", robot.beacon.getLeftPos());
+            telemetry.addData("rightBeacon", robot.beacon.getRightPos());
             telemetry.update();
             //Wait for the next tick before looping again
             robot.waitForTick(40);

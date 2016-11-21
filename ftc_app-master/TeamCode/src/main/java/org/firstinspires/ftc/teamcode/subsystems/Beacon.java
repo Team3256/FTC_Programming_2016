@@ -2,15 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.base.SensorBase;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
+import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
 public class Beacon extends Subsystem{
     private Servo leftDonger, rightDonger;
     private double leftPos = 0;
@@ -24,7 +21,7 @@ public class Beacon extends Subsystem{
     }
 
     public void init(HardwareMap hardwareMap) {
-        telemetry = AutoBlueBeacons.telemetryPass;
+        telemetry = TelemetryHolder.telemetry;
         leftDonger = hardwareMap.servo.get("leftDonger");
         rightDonger = hardwareMap.servo.get("rightDonger");
     }
@@ -48,7 +45,7 @@ public class Beacon extends Subsystem{
         else if (right)
             leftPos -= 0.03;
         else leftPos = leftDonger.getPosition();
-        leftPos = Math.min(Math.max(leftPos,0),1);
+        leftPos = Range.clip(rightPos, 0, 1);
         leftDonger.setPosition(leftPos);
     }
 
@@ -58,7 +55,7 @@ public class Beacon extends Subsystem{
         else if (right)
             rightPos -= 0.03;
         else rightPos = rightDonger.getPosition();
-        rightPos = Math.min(Math.max(rightPos,0),1);
+        rightPos = Range.clip(rightPos, 0, 1);
         rightDonger.setPosition(rightPos);
     }
 
@@ -71,11 +68,11 @@ public class Beacon extends Subsystem{
     }
 
     public void setLeftBangPos() {
-        leftDonger.setPosition(0.72);
+        leftDonger.setPosition(0.66);
     }
 
     public void setRightBangPos() {
-        rightDonger.setPosition(0.45);
+        rightDonger.setPosition(0.33);
     }
 
     public void setLeftNeutralPos() {
@@ -83,18 +80,30 @@ public class Beacon extends Subsystem{
     }
 
     public void setRightNeutralPos() {
-        rightDonger.setPosition(0);
+        rightDonger.setPosition(1);
     }
 
     public static Beacon getBeacon() {
         return beacon;
     }
 
-    public void setServoPosition(boolean stored_blue) {
+    public void updateServoPositionBlue() {
         telemetry.addData("blue", sensorBase.isBlue());
         telemetry.addData("blueval", sensorBase.getBlue());
         telemetry.update();
         if (sensorBase.isBlue()) {
+            beacon.setRightNeutralPos();
+            beacon.setLeftBangPos();
+        } else {
+            beacon.setRightBangPos();
+            beacon.setLeftNeutralPos();
+        }
+    }
+    public void updateServoPositionRed() {
+        telemetry.addData("red", sensorBase.isRed());
+        telemetry.addData("redval", sensorBase.getRed());
+        telemetry.update();
+        if (sensorBase.isRed()) {
             beacon.setRightNeutralPos();
             beacon.setLeftBangPos();
         } else {

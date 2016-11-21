@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
 public class SensorBase{
     private DeviceInterfaceModule deviceInterfaceModule;
     //sensors
@@ -30,8 +27,8 @@ public class SensorBase{
         deviceInterfaceModule = hardwareMap.deviceInterfaceModule.get("Sensor Board");
         gyro = AHRS.getInstance(deviceInterfaceModule, Constants.GYRO_I2C_PORT, AHRS.DeviceDataType.kProcessedData, Constants.NAVX_GYRO_UPDATE_HZ);
         opticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("ods");
-        beaconColorSensor = hardwareMap.colorSensor.get("beacon");
-        beaconColorSensor.enableLed(false);
+        beaconColorSensor = hardwareMap.colorSensor.get("colorSensor");
+        beaconColorSensor.enableLed(true);
         beaconColorSensor.enableLed(false);
         hardwareMap.logDevices();
     }
@@ -40,7 +37,7 @@ public class SensorBase{
         this.resetGyro();
     }
 
-    public AHRS getGryo() {
+    public AHRS getGyro() {
         return gyro;
     }
     
@@ -52,10 +49,6 @@ public class SensorBase{
         return gyro.getPitch();
     }
 
-    public double getRoll() {
-        return gyro.getRoll();
-    }
-
     public void resetGyro() {
         gyro.zeroYaw();
     }
@@ -65,7 +58,13 @@ public class SensorBase{
     }
 
     public boolean isBlue() {
+        beaconColorSensor.enableLed(false);
         return beaconColorSensor.blue() >= 2 && beaconColorSensor.blue()!=255;
+    }
+
+    public boolean isRed() {
+        beaconColorSensor.enableLed(false);
+        return beaconColorSensor.red() >= 2 && beaconColorSensor.red() != 255;
     }
 
     public void disableBeaconLED() {
@@ -73,15 +72,16 @@ public class SensorBase{
     }
 
     public int getBlue() {
+        beaconColorSensor.enableLed(false);
         return beaconColorSensor.blue();
     }
 
     public int getRed() {
+        beaconColorSensor.enableLed(false);
         return beaconColorSensor.red();
     }
 
     public boolean gyroIsReady(){
         return !gyro.isCalibrating() && gyro.isConnected();
     }
-
 }

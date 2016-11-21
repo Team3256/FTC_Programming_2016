@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Constants;
-import org.firstinspires.ftc.teamcode.base.Robot;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueBeacons;
-import org.firstinspires.ftc.teamcode.opmodes.AutoBlueDefense;
+import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
 public class DriveTrain extends Subsystem{
     //motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
@@ -28,7 +22,7 @@ public class DriveTrain extends Subsystem{
 
     public void init(HardwareMap hardwareMap){
         //telemetry = AutoBlueBeacons.telemetryPass;
-        telemetry = AutoBlueDefense.telemetryPass;
+        telemetry = TelemetryHolder.telemetry;
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
@@ -36,10 +30,10 @@ public class DriveTrain extends Subsystem{
         rightBack = hardwareMap.dcMotor.get("rightBack");
 
         //set motor directions
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         //set motors to brake
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -102,11 +96,19 @@ public class DriveTrain extends Subsystem{
         rightBack.setMaxSpeed(ticksPerSec);
     }
 
-    public void arcadeDrive(double throttle, double turn) {
+    public void arcadeDrive(double throttle, double turn, boolean reverse, boolean slow) {
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         throttle = Range.clip(throttle, -1, 1);
         turn = Range.clip(turn, -1, 1);
+        if (reverse) {
+            throttle = -throttle;
+        }
         double left = throttle - turn;
         double right = throttle + turn;
+        if (slow){
+            left/=2;
+            right/=2;
+        }
         runLeft(left);
         runRight(right);
     }
@@ -120,11 +122,15 @@ public class DriveTrain extends Subsystem{
     }
 
     public double getRightEncoderValue(){
-        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2;
+        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2D;
     }
 
     public double getLeftEncoderValue(){
-        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2;
+        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2D;
+    }
+
+    public double getAverageEncoderValue(){
+        return (getLeftEncoderValue() + getRightEncoderValue()) / 2;
     }
 
     public void resetEncoders(){
@@ -132,6 +138,11 @@ public class DriveTrain extends Subsystem{
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -147,16 +158,38 @@ public class DriveTrain extends Subsystem{
         runRight(power);
     }
 
-    public void driveToDistance(double inches, double power){
+    public void flipDirection(){
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    public void unFlipDirection(){
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+    }
+
+    public void driveToDistance(double inches, double power, boolean forward){
+        if (!forward){
+            flipDirection();
+        }
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
         resetEncoders();
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
         while(isBusy()){
-            telemetry.addData("distance", (getLeftEncoderValue() + getRightEncoderValue()) / 2);
+            if (inchesToTicks(inches)<=Math.abs(getAverageEncoderValue())) break;
+            telemetry.addData("distance", ticksToInches(Math.abs(getAverageEncoderValue())));
+            telemetry.addData("angle", getAngle());
             telemetry.update();
         }
         setPower(0);
+        if (!forward){
+            unFlipDirection();
+        }
     }
 
     public void driveToRamp(double safety_inches, double power){
@@ -165,7 +198,7 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(safety_inches));
         setPower(power);
         while(isBusy()){
-            if (getPitch()>28) break;
+            if (getPitch()>=28) break;
         }
         setPower(0);
     }
@@ -176,46 +209,53 @@ public class DriveTrain extends Subsystem{
         setTargetPos((int) inchesToTicks(safety_inches));
         setPower(power);
         while(isBusy()){
-            if (getOds()>0.5){
+            telemetry.addData("driving to line", "");
+            if (getOds()>=0.5){
                 break;
             }
         }
+        telemetry.addData("drivetoline is done", "");
         setPower(0);
     }
 
     public void turn(double degrees, double power, boolean right){
-        double direction = right ? 1 : -1;
+        telemetry.addData("INSIDE TURN------------", "---");
+        double direction = right ? -1 : 1;
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        resetGyro();
-        while(true){
+        try {
+            resetGyro();
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        while(true) {
             telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
             telemetry.update();
-            if ((Math.abs(degrees - Math.abs(sensorBase.getAngle())) < 2)){
+            if (Math.abs(getAngle())>degrees) {
                 runLeft(0);
                 runRight(0);
                 break;
-            }
-            else {
+            } else {
                 runLeft(direction * -power);
                 runRight(direction * power);
             }
         }
-        setPower(0);
+            setPower(0);
     }
 
     public void oneWheelTurn(double degrees, double power, boolean right){
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         resetGyro();
         while(true){
-            if ((Math.abs(degrees - Math.abs(sensorBase.getAngle())) < 2)) {
+            if (Math.abs(getAngle())>degrees) {
                 runLeft(0);
                 runRight(0);
                 break;
             }
             telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
             telemetry.update();
-            if (right) runRight(power);
-            else runLeft(power);
+            if (right) runLeft(power);
+            else runRight(power);
         }
         setPower(0);
     }

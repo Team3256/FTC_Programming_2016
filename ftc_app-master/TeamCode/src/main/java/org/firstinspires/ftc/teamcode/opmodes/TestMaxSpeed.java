@@ -6,10 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.base.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-/**
- * Created by Team 6696 on 11/16/2016.
- */
 @Autonomous(name = "testMax")
 public class TestMaxSpeed extends LinearOpMode {
     @Override
@@ -17,16 +15,16 @@ public class TestMaxSpeed extends LinearOpMode {
         Robot robot = Robot.getInstance();
         robot.autonomousInit(hardwareMap);
         super.waitForStart();
+        Shooter shooter = Shooter.getInstance();
+        shooter.setFlyRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.runFly(1);
         long current = System.currentTimeMillis();
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        driveTrain.setPower(1);
         while (System.currentTimeMillis() - current < 1000) {
-            telemetry.addData("ticks", driveTrain.getLeftEncoderValue() + " " + driveTrain.getRightEncoderValue());
+            telemetry.addData("ticks", shooter.getLEnc() + " " + shooter.getREnc());
             telemetry.update();
         }
-        driveTrain.setPower(0);
-        telemetry.addData("ticks", driveTrain.getLeftEncoderValue() + " " + driveTrain.getRightEncoderValue());
+        shooter.runFly(0);
+        telemetry.addData("ticks", shooter.getLEnc() + " " + shooter.getREnc());
         telemetry.update();
         sleep(10000);
     }

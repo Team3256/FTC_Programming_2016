@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.base;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Beacon;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-/**
- * Created by Team 6696 on 11/11/2016.
- */
-public class
-Robot {
+public class Robot {
     private HardwareMap hardwareMap;
     //time period for updating loop
 
@@ -19,7 +16,7 @@ Robot {
 
     //subsystems
     public DriveTrain driveTrain = DriveTrain.getInstance();
-    public Intake intake = Intake.getIntake();
+    public Shooter shooter = Shooter.getInstance();
     public Beacon beacon = Beacon.getBeacon();
 
     //singleton
@@ -31,14 +28,15 @@ Robot {
 
     public void autonomousInit(HardwareMap hardwareMap){
         driveTrain.init(hardwareMap);
-        //intake.init_Intake(hardwareMap);
+        shooter.init(hardwareMap);
         beacon.init(hardwareMap);
         beacon.initPos();
     }
 
     public void teleopInit(HardwareMap hardwareMap){
         driveTrain.init(hardwareMap);
-        //intake.init_Intake(hm);
+        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.init(hardwareMap);
         beacon.init(hardwareMap);
         beacon.initPos();
     }
@@ -60,6 +58,10 @@ Robot {
 
     public double getBlue(){
         return driveTrain.getBlue();
+    }
+
+    public double getRed() {
+        return driveTrain.getRed();
     }
 
     public double getOds(){
