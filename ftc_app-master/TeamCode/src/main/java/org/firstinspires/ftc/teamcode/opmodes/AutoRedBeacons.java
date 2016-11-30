@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Robot;
 
 @Autonomous(name = "AutoRedBeacons")
+@Disabled
 public class AutoRedBeacons extends LinearOpMode{
     private Robot robot = Robot.getInstance();
     public static Telemetry telemetryPass;

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
 
 public class Shooter extends Subsystem {
@@ -70,7 +71,6 @@ public class Shooter extends Subsystem {
         dongerLord.setPosition(0);
     }
 
-    //TODO: tune
     public void runFly(double power){
         leftFly.setPower(power);
         rightFly.setPower(power);
@@ -81,28 +81,26 @@ public class Shooter extends Subsystem {
         rightFly.setPower(0);
     }
 
+    public double getPower(){
+        return (leftFly.getPower()+rightFly.getPower())/2;
+    }
     public void setFlyRunMode(DcMotor.RunMode runMode){
         leftFly.setMode(runMode);
         rightFly.setMode(runMode);
     }
+
     //only use in auto
     public void autoShootSequence(){
         setFlyRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        resetEncoders();
         //start flywheel
-        runFly(1);
-        //wait a second to ramp up
-        try {
-            Thread.sleep(1000);
-            releaseBall();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        runFly(Constants.CLOSE_SHOT_PID_POWER);
         //run intake for two seconds to load balls
-        double curr_time = System.currentTimeMillis();
-        while(curr_time<2000){
+        double prev_time = System.currentTimeMillis();
+        //run elevator for 5 seconds to load balls
+        while(System.currentTimeMillis()-prev_time<5000){
             intakeBall();
         }
+        //stop intake and flywheel
         stopIntake();
         stopFly();
     }
@@ -124,5 +122,22 @@ public class Shooter extends Subsystem {
 
     public double getDongerLordPos(){
         return dongerLord.getPosition();
+    }
+
+    double end_time = 0, start_time = 0;
+    double prev_ticks = 0, curr_ticks = 0;
+
+    public double getRPM(){
+        end_time = System.currentTimeMillis();
+        curr_ticks = (getLEnc()+getREnc())/2;
+        double dt = end_time-start_time;
+        double dticks = curr_ticks-prev_ticks;
+        double RPM = 0;
+        if (dt>100){
+            RPM = Constants.TICKS_PER_ROTATION*dticks/dt;
+        }
+        start_time = System.currentTimeMillis();
+        prev_ticks = curr_ticks;
+        return RPM;
     }
 }

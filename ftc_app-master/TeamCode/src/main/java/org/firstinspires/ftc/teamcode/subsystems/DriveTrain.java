@@ -9,20 +9,19 @@ import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
 import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
+import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
+
 public class DriveTrain extends Subsystem{
     //motors
     private DcMotor leftFront, leftBack, rightFront, rightBack;
     //singleton
     private static DriveTrain driveTrain = new DriveTrain();
-    private static Telemetry telemetry;
 
     private DriveTrain() {
 
     }
 
     public void init(HardwareMap hardwareMap){
-        //telemetry = AutoBlueBeacons.telemetryPass;
-        telemetry = TelemetryHolder.telemetry;
         //initialize the motors
         leftFront = hardwareMap.dcMotor.get("leftFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");

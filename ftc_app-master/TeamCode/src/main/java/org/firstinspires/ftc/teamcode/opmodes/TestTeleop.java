@@ -15,11 +15,15 @@ public class TestTeleop extends LinearOpMode{
     double left1 = 0, right1 = 0;
     boolean a2 = false, y2 = false;
     boolean x2 = false, b2 = false;
+    boolean intake_button = false, outtake_button = false;
+    boolean prev_intake_button = false, prev_outtake_button = false;
+    boolean intake_toggle = false, outtake_toggle = false;
     /*
     boolean prev_intake_button = false, prev_outtake_button = false;
     boolean intake_toggle = false, outtake_toggle = false;*/
     boolean right_bumper1 = false, left_bumper1 = false;
     double right_trigger1 = 0;
+    double fly_speed = 0.375;
     /**
      * runOpMode()
      * Runs the teleop OpMode
@@ -40,35 +44,46 @@ public class TestTeleop extends LinearOpMode{
             b2 = gamepad1.b;
             left_bumper1 = gamepad1.left_bumper;
             right_bumper1 = gamepad1.right_bumper;
-            /*
+            intake_button = gamepad2.a;
+            outtake_button = gamepad2.b;
+            right_trigger1 = gamepad2.right_trigger;
             if (intake_button && !prev_intake_button) {
                 if (!intake_toggle) {
-                    robot.beacon.setRightBangPos();
+                    fly_speed+=0.03;
                     intake_toggle = true;
                 } else {
-                    robot.beacon.setRightNeutralPos();
-                    intake_toggle = false;
+                    intake_button = false;
+                    fly_speed+=0.03;
                 }
             }
 
             if (outtake_button && !prev_outtake_button) {
                 if (!outtake_toggle) {
-                    robot.beacon.setLeftBangPos();
+                    fly_speed-=0.03;
                     outtake_toggle = true;
                 } else {
-                    robot.beacon.setLeftNeutralPos();
+                    fly_speed-=0.03;
                     outtake_toggle = false;
                 }
             }
-
             prev_intake_button = intake_button;
             prev_outtake_button = outtake_button;
-            */
-            //left, right, reverse, slow
 
 
+            if (a2){
+                robot.shooter.intakeBall();
+            }
+            else if (y2){
+                robot.shooter.outtakeBall();
+            }
+            else robot.shooter.stopIntake();
 
+            if (right_trigger1>0.5){
+                robot.shooter.runFly(fly_speed);
+            }
+            else robot.shooter.stopFly();
 
+            telemetry.addData("speed", robot.shooter.getPower());
 
             telemetry.addData("ods", robot.getOds());
             telemetry.addData("blue", robot.isBlue());

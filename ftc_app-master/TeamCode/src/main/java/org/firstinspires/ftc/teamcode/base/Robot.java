@@ -38,7 +38,8 @@ public class Robot {
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.init(hardwareMap);
         beacon.init(hardwareMap);
-        beacon.initPos();
+        beacon.setRightBangPos();
+        beacon.setLeftBangPos();
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {
