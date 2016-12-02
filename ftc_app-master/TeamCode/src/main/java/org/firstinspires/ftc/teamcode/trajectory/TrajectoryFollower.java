@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.trajectory;
 
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+
 import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
 public class TrajectoryFollower{
 	
@@ -62,10 +65,11 @@ public class TrajectoryFollower{
             telemetry.addData("vel", s.getVel());
             telemetry.addData("pos", s.getPos());
 			feedForwardValue = calcFeedForward(s.vel, s.accel);
-			feedBackValue = calcFeedBack(s,s.pos, curr_actual_dist);
+			feedBackValue = calcFeedBack(s, s.pos, curr_actual_dist);
 			output = feedForwardValue + feedBackValue;
             telemetry.addData("output", output);
             telemetry.addData("current_seg", curr_segment);
+			telemetry.addData("encoders", DriveTrain.getInstance().ticksToInches(DriveTrain.getInstance().getAverageEncoderValue()));
 			curr_segment++;
 			output = Range.clip(output, -1, 1);
 			//System.out.println(Double.toString(curr_actual_dist) + "," + Double.toString(s.pos) + "," + Double.toString(s.vel) + "," + Double.toString(s.accel) +","+ Double.toString(output));

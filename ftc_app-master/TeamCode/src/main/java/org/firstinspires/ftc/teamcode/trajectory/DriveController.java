@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.trajectory;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -41,8 +42,8 @@ public class DriveController {
     public void init(){
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftGenerator.setConfig(28, 50, Constants.dt);
-        rightGenerator.setConfig(28, 50, Constants.dt);
+        leftGenerator.setConfig(20, 30, Constants.dt);
+        rightGenerator.setConfig(20, 30, Constants.dt);
         leftTraj = leftGenerator.generateTraj(0,0,distance);
         rightTraj = rightGenerator.generateTraj(0,0,distance);
         leftFollower.setTrajectory(leftTraj);
@@ -50,7 +51,7 @@ public class DriveController {
         leftFollower.setLoopTime(Constants.dt);
         rightFollower.setLoopTime(Constants.dt);
         leftFollower.setGains(Constants.kV, Constants.kA, Constants.kP, Constants.kI, Constants.kD);
-        rightFollower.setGains(Constants.kV,Constants.kA,Constants.kP,Constants.kI, Constants.kD);
+        rightFollower.setGains(Constants.kV, Constants.kA, Constants.kP, Constants.kI, Constants.kD);
     }
 
     public void reset(){
@@ -58,36 +59,34 @@ public class DriveController {
         rightFollower.resetController();
     }
 
-    Timer t = new Timer();
+    Handler t = new Handler(Looper.getMainLooper());
 
     public void start(){
         reset();
-        Updater loop = new Updater();
-        long periodms = (long)(1000*Constants.dt);
-        t.scheduleAtFixedRate(loop,0,periodms);
+        t.post(r);
     }
 
     public void stop(){
-        t.cancel();
-        t.purge();
+        t.removeCallbacks(r);
     }
 
     public boolean isFinished(){
         return leftFollower.isFinished() && rightFollower.isFinished();
     }
-
-    public class Updater extends TimerTask{
-        @Override
+    double left,right;
+    Runnable r = new Runnable() {
         public void run() {
             if (!isFinished()){
-                double left = leftFollower.calcMotorOutput(driveTrain.ticksToInches(driveTrain.getLeftEncoderValue()));
-                double right = rightFollower.calcMotorOutput(driveTrain.ticksToInches(driveTrain.getRightEncoderValue()));
+                left = leftFollower.calcMotorOutput(driveTrain.ticksToInches(driveTrain.getLeftEncoderValue()));
+                right = rightFollower.calcMotorOutput(driveTrain.ticksToInches(driveTrain.getRightEncoderValue()));
                 driveTrain.tankDrive(left, right);
+                t.postDelayed(r,(int)(1000*Constants.dt));
+
             }
             else {
                 driveTrain.setPower(0);
                 stop();
             }
         }
-    }
+    };
 }

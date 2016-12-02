@@ -8,14 +8,14 @@ public class Constants {
 
     public static final double CLOSE_SHOT_PID_POWER = 0.40; //percent of max velocity (38000ticks/sec)
 
-    public static final double FAR_SHOT_PID_Power = 0.40; //percent of max velocity
+    public static final double FAR_SHOT_PID_Power = 0.40; //percent of max velocity same as close shot
 
-    public static final double kV = 1.0/28.0;
+    public static final double kV = 1.0/20.0;
     public static final double kA = 0;
 
-    public static final double kP = 0;
+    public static final double kP = 0.0;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double dt = 5.0/100.0;
+    public static final double dt = 15.0/100.0;
 }
