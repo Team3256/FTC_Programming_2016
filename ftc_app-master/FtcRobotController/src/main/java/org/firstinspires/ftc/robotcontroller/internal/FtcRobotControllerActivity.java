@@ -45,9 +45,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageButton;
@@ -84,19 +86,26 @@ import com.qualcomm.robotcore.util.Dimmer;
 import com.qualcomm.robotcore.util.ImmersiveMode;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.wifi.NetworkConnection;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCameraView;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
 
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class FtcRobotControllerActivity extends Activity {
-
+public class FtcRobotControllerActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2 {
+  private static JavaCameraView cameraView;
   public static final String TAG = "RCActivity";
 
   private static final int REQUEST_CONFIG_WIFI_CHANNEL = 1;
@@ -133,6 +142,21 @@ public class FtcRobotControllerActivity extends Activity {
 
   protected FtcEventLoop eventLoop;
   protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
+
+  @Override
+  public void onCameraViewStarted(int width, int height) {
+
+  }
+
+  @Override
+  public void onCameraViewStopped() {
+
+  }
+
+  @Override
+  public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    return inputFrame.rgba();
+  }
 
   protected class RobotRestarter implements Restarter {
 
@@ -195,7 +219,6 @@ public class FtcRobotControllerActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     RobotLog.vv(TAG, "onCreate()");
-
     receivedUsbAttachmentNotifications = new ConcurrentLinkedQueue<UsbDevice>();
     eventLoop = null;
 
@@ -214,10 +237,16 @@ public class FtcRobotControllerActivity extends Activity {
       }
     });
 
+
+    cameraView = (JavaCameraView) findViewById(R.id.preview);
+    cameraView.setVisibility(SurfaceView.VISIBLE);
+    cameraView.setCvCameraViewListener(this);
+
     BlocksOpMode.setActivityAndWebView(this, (WebView) findViewById(R.id.webViewBlocksRuntime));
 
     ClassManagerFactory.processClasses();
     cfgFileMgr = new RobotConfigFileManager(this);
+
 
     // Clean up 'dirty' status after a possible crash
     RobotConfigFile configFile = cfgFileMgr.getActiveConfig();
@@ -282,7 +311,6 @@ public class FtcRobotControllerActivity extends Activity {
     updateUIAndRequestRobotSetup();
 
     cfgFileMgr.getActiveConfigAndUpdateUI();
-
     entireScreenLayout.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
@@ -290,19 +318,47 @@ public class FtcRobotControllerActivity extends Activity {
         return false;
       }
     });
+    //cameraView = (JavaCameraView) findViewById(R.id.preview);
+    //cameraView.setCvCameraViewListener(this);
+    //cameraView.setVisibility(SurfaceView.VISIBLE);
   }
-
+  protected BaseLoaderCallback cameraCallback = new BaseLoaderCallback(this) {
+    @Override
+    public void onManagerConnected(int status){
+      switch (status) {
+        case LoaderCallbackInterface.SUCCESS: {
+          cameraView.enableView();
+        }
+        break;
+        default: {
+          super.onManagerConnected(status);
+        }
+        break;
+      }
+    }
+  };
   @Override
   protected void onResume() {
-    super.onResume();
-    RobotLog.vv(TAG, "onResume()");
-    readNetworkType(NETWORK_TYPE_FILENAME);
+      super.onResume();
+      RobotLog.vv(TAG, "onResume()");
+      readNetworkType(NETWORK_TYPE_FILENAME);
+      if (!OpenCVLoader.initDebug()){
+        Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0,this,cameraCallback);
+      }
+      else{
+        Log.d(TAG, "Opencv library found inside package. Using it!");
+        cameraCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+      }
   }
 
   @Override
   public void onPause() {
     super.onPause();
     RobotLog.vv(TAG, "onPause()");
+    if (cameraView!=null){
+      cameraView.disableView();
+    }
     if (programmingModeController.isActive()) {
       programmingModeController.stopProgrammingMode();
     }
@@ -314,9 +370,12 @@ public class FtcRobotControllerActivity extends Activity {
     // called surprisingly often.
     super.onStop();
     RobotLog.vv(TAG, "onStop()");
-
+    if (cameraView!=null){
+      cameraView.disableView();
+    }
     // We *do* shutdown the robot even when we go into configuration editing
     controllerService.shutdownRobot();
+
   }
 
   @Override
@@ -327,6 +386,9 @@ public class FtcRobotControllerActivity extends Activity {
     unbindFromService();
     wifiLock.release();
     RobotLog.cancelWriteLogcatToDisk(this);
+    super.onDestroy();
+    if (cameraView != null)
+      cameraView.disableView();
   }
 
   protected void bindToService() {

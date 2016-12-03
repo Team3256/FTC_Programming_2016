@@ -9,14 +9,12 @@ import org.firstinspires.ftc.teamcode.base.Subsystem;
 import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
 import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
-
 public class Beacon extends Subsystem{
     private Servo leftDonger, rightDonger;
     private double leftPos = 0;
     private double rightPos = 1;
     //singleton
     private static Beacon beacon = new Beacon();
-
     private Beacon() {
 
     }

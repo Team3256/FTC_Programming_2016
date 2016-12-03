@@ -20,6 +20,10 @@ android {
     }
 }
 
+dependencies {
+    compile project(':openCVLibrary310')
+}
+
 repositories {
     flatDir {
         dirs '../libs', 'C:\\Users\\Eric\\navx-micro\\android\\libs'
