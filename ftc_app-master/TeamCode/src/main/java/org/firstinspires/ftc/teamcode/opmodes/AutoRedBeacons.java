@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Robot;
 
 @Autonomous(name = "AutoRedBeacons")
-@Disabled
+
 public class AutoRedBeacons extends LinearOpMode{
     private Robot robot = Robot.getInstance();
     public static Telemetry telemetryPass;
@@ -22,13 +22,15 @@ public class AutoRedBeacons extends LinearOpMode{
             telemetry.addData("redval", robot.getRed());
             telemetry.update();
         }
-        telemetry.addData("gyro ready", "yes");
+        telemetry.addData("gyro ready", robot.getAngle());
         telemetry.addData("color sens", robot.getRed());
         telemetry.addData("ods", robot.getOds());
         telemetry.update();
         //wait for play button
         super.waitForStart();
         //one wheel turn towards beacon
+        robot.shooter.autoShootSequence();
+        /*
         robot.driveTrain.oneWheelTurn(38, 0.275, false);
         //drive to white line
         robot.driveTrain.driveToLine(60, 0.9);
@@ -57,6 +59,6 @@ public class AutoRedBeacons extends LinearOpMode{
         //set servo positions depending on what we see
         robot.beacon.updateServoPositionRed();
         //hit beacon
-        robot.driveTrain.driveToDistance(8,0.35,true);
+        robot.driveTrain.driveToDistance(8,0.35,true);*/
     }
 }

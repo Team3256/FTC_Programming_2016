@@ -93,11 +93,10 @@ public class Shooter extends Subsystem {
     public void autoShootSequence(){
         setFlyRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //start flywheel
-        runFly(Constants.CLOSE_SHOT_PID_POWER);
-        //run intake for two seconds to load balls
+        runFly(Constants.AUTO_SHOOT_POWER);
         double prev_time = System.currentTimeMillis();
         //run elevator for 5 seconds to load balls
-        while(System.currentTimeMillis()-prev_time<5000){
+        while(System.currentTimeMillis()-prev_time<Constants.ONE_BALL_TIME){
             intakeBall();
         }
         //stop intake and flywheel

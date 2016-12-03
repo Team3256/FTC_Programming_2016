@@ -84,7 +84,7 @@ public class RobotTeleop extends LinearOpMode{
 
             if (right_trigger2>0.5){
                 robot.shooter.releaseBall();
-                robot.shooter.runFly(Constants.FAR_SHOT_PID_Power);
+                robot.shooter.runFly(Constants.CLOSE_SHOT_PID_POWER);
             }
             else if (left_trigger2>0.5){
                 robot.shooter.releaseBall();
