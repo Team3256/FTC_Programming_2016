@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.base.Robot;
 
 public class AutoRedBeacons extends LinearOpMode{
     private Robot robot = Robot.getInstance();
-    public static Telemetry telemetryPass;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -23,6 +22,7 @@ public class AutoRedBeacons extends LinearOpMode{
             telemetry.update();
         }
         telemetry.addData("gyro ready", robot.getAngle());
+
         telemetry.addData("color sens", robot.getRed());
         telemetry.addData("ods", robot.getOds());
         telemetry.update();
@@ -30,18 +30,17 @@ public class AutoRedBeacons extends LinearOpMode{
         super.waitForStart();
         //one wheel turn towards beacon
         robot.shooter.autoShootSequence();
-        /*
-        robot.driveTrain.oneWheelTurn(38, 0.275, false);
+        robot.driveTrain.oneWheelTurn(30,0.45,false);
         //drive to white line
-        robot.driveTrain.driveToLine(60, 0.9);
-        //drive a tiny bit forward so we are centered when we turn
-        robot.driveTrain.driveToDistance(2.75, 0.4, true);
+        robot.driveTrain.driveToLine(60, 0.48);
         //turn to the beacon
-        robot.driveTrain.turn(42, 0.25, false);
+        robot.driveTrain.oneWheelTurn(30, 0.45, false);
         //set servo position depending on what color we see
-        robot.beacon.updateServoPositionRed();
+        //robot.beacon.updateServoPositionRed();
         //hit beacon
-        robot.driveTrain.driveToDistance(8, 0.35, true);
+        //robot.driveTrain.driveToDistance(8, 0.48, true);
+        /*
+
         //drive backward so we can turn towards second beacon
         robot.driveTrain.driveToDistance(6, 0.5, false);
         //reset servo positions to neutral for both

@@ -15,16 +15,22 @@ public class TestMaxSpeed extends LinearOpMode {
         Robot robot = Robot.getInstance();
         robot.autonomousInit(hardwareMap);
         super.waitForStart();
-        Shooter shooter = Shooter.getInstance();
-        shooter.setFlyRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooter.runFly(1);
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveTrain.setPower(1);
         long current = System.currentTimeMillis();
         while (System.currentTimeMillis() - current < 1000) {
-            telemetry.addData("ticks", shooter.getLEnc() + " " + shooter.getREnc());
+            telemetry.addData("ticksLF", driveTrain.leftFront.getCurrentPosition());
+            telemetry.addData("ticksRF", driveTrain.rightFront.getCurrentPosition());
+            telemetry.addData("ticksLB", driveTrain.leftBack.getCurrentPosition());
+            telemetry.addData("ticksRB", driveTrain.rightBack.getCurrentPosition());
             telemetry.update();
         }
-        shooter.runFly(0);
-        telemetry.addData("ticks", shooter.getLEnc() + " " + shooter.getREnc());
+        driveTrain.setPower(0);
+        telemetry.addData("ticksLF", driveTrain.leftFront.getCurrentPosition());
+        telemetry.addData("ticksRF", driveTrain.rightFront.getCurrentPosition());
+        telemetry.addData("ticksLB", driveTrain.leftBack.getCurrentPosition());
+        telemetry.addData("ticksRB", driveTrain.rightBack.getCurrentPosition());
         telemetry.update();
         sleep(10000);
     }

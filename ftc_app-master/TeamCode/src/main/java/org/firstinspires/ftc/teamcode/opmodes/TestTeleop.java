@@ -47,6 +47,8 @@ public class TestTeleop extends LinearOpMode{
             intake_button = gamepad2.a;
             outtake_button = gamepad2.b;
             right_trigger1 = gamepad2.right_trigger;
+            robot.beacon.incLeft(intake_button,outtake_button);
+            /*
             if (intake_button && !prev_intake_button) {
                 if (!intake_toggle) {
                     fly_speed+=0.03;
@@ -81,13 +83,14 @@ public class TestTeleop extends LinearOpMode{
             if (right_trigger1>0.5){
                 robot.shooter.runFly(fly_speed);
             }
-            else robot.shooter.stopFly();
-
+            else robot.shooter.stopFly();*/
+            telemetry.addData("servo", robot.shooter.getDongerLordPos());
             telemetry.addData("speed", robot.shooter.getPower());
 
             telemetry.addData("ods", robot.getOds());
             telemetry.addData("blue", robot.isBlue());
             telemetry.addData("blue val", robot.getBlue());
+
 
             telemetry.addData("angle", robot.getAngle());
             telemetry.addData("ticks", robot.driveTrain.getLeftEncoderValue() + " " + robot.driveTrain.getRightEncoderValue());

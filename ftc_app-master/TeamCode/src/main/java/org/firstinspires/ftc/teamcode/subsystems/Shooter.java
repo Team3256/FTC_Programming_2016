@@ -34,7 +34,7 @@ public class Shooter extends Subsystem {
         rightFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //TODO: tune
+        //38000 ticks per sec emperically determined
         leftFly.setMaxSpeed(38000);
         rightFly.setMaxSpeed(38000);
         leftFly.setPower(0);
@@ -50,6 +50,8 @@ public class Shooter extends Subsystem {
         holdBall();
     }
 
+    boolean flyWheelIsRunning = false;
+
     public void intakeBall() {
         holdBall();
         intake.setPower(1);
@@ -63,20 +65,27 @@ public class Shooter extends Subsystem {
     public void stopIntake(){
         intake.setPower(0);
     }
+
     public void holdBall() {
-        dongerLord.setPosition(0.7);
+        //only release ball holder when we are going to shoot
+        if (flyWheelIsRunning) return;
+        dongerLord.setPosition(Constants.HOLD_BALL_SERVO_POS);
     }
 
     public void releaseBall() {
-        dongerLord.setPosition(0);
+        //dont release ball holder if we are not going to shoot
+        if (!flyWheelIsRunning) return;
+        dongerLord.setPosition(Constants.RELEASE_BALL_SERVO_POS);
     }
 
     public void runFly(double power){
+        flyWheelIsRunning = true;
         leftFly.setPower(power);
         rightFly.setPower(power);
     }
 
     public void stopFly(){
+        flyWheelIsRunning = false;
         leftFly.setPower(0);
         rightFly.setPower(0);
     }
@@ -93,10 +102,11 @@ public class Shooter extends Subsystem {
     public void autoShootSequence(){
         setFlyRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //start flywheel
+        dongerLord.setPosition(Constants.RELEASE_BALL_SERVO_POS);
         runFly(Constants.AUTO_SHOOT_POWER);
         double prev_time = System.currentTimeMillis();
-        //run elevator for 5 seconds to load balls
-        while(System.currentTimeMillis()-prev_time<Constants.ONE_BALL_TIME){
+        //run elevator for enough time to load balls
+        while(System.currentTimeMillis()-prev_time<Constants.AUTO_BALL_TIME*1000){
             intakeBall();
         }
         //stop intake and flywheel

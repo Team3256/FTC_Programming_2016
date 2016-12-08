@@ -82,6 +82,6 @@ public class SensorBase{
     }
 
     public boolean gyroIsReady(){
-        return !gyro.isCalibrating() && gyro.isConnected();
+        return true;//return !gyro.isCalibrating() && gyro.isConnected();
     }
 }

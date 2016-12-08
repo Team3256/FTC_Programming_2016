@@ -70,7 +70,7 @@ public class RobotTeleop extends LinearOpMode{
             */
             //left, right, reverse, slow
 
-            robot.driveTrain.arcadeDrive(left1,right1,right_bumper1,left_bumper1);
+            robot.driveTrain.arcadeDrive(left1*left1*left1,right1*right1*right1,right_bumper1,left_bumper1);
 
             if (a2){
                 robot.shooter.intakeBall();
