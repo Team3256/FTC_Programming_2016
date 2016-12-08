@@ -98,9 +98,18 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.RotatedRect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -155,7 +164,105 @@ public class FtcRobotControllerActivity extends Activity implements CameraBridge
 
   @Override
   public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-    return inputFrame.rgba();
+    return processVision(inputFrame.rgba());
+  }
+  private Scalar mLowerBound = new Scalar(0, 0, 200);
+  private Scalar mUpperBound = new Scalar(255, 80, 255);
+
+  private Mat mPyrDownMat, mHsvMat, mMask, mDilatedMask, mHierarchy;
+
+  private List<MatOfPoint> contours = new ArrayList<>();
+  private List<MatOfPoint> mContours = new ArrayList<>();
+
+  RotatedRect rectCont;
+  private Point[] vertices = new Point[4];
+
+  int contourIndex = -1;
+  double maxArea = 0, area;
+  double lineLength, maxLength, deltaX, deltaY, longestX, longestY, lineIndex;
+
+  public Mat processVision(Mat rgbaFrame){
+    Imgproc.cvtColor(rgbaFrame, mHsvMat, Imgproc.COLOR_RGB2HSV_FULL);
+
+    //Filter by HSV Values
+    Core.inRange(mHsvMat, mLowerBound, mUpperBound, mMask);
+    //TODO: Figure out what this
+    Imgproc.dilate(mMask, mDilatedMask, new Mat());
+
+    //clear variables for search
+    maxArea = 0;
+    contours.clear();
+    mContours.clear();
+    contourIndex = -1;
+
+    //find Contours
+    Imgproc.findContours(mDilatedMask, contours, mHierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+    //LOOP THROUGH ALL CONTOURS
+    //filter out small contours & record largest
+    for (int i = 0; i < contours.size(); i++){
+      area = Imgproc.contourArea(contours.get(i));
+      if (area > 400){
+        if (area > maxArea) {
+          maxArea = area;
+          contourIndex = i;
+        }
+        mContours.add(contours.get(i));
+      }
+    }
+
+    //check if an acceptable contour was found
+    if (contourIndex > -1) {
+      rectCont = Imgproc.minAreaRect(new MatOfPoint2f(contours.get(contourIndex).toArray()));
+
+      rectCont.points(vertices);
+      Imgproc.putText(rgbaFrame, "Angle: " + String.valueOf(findAngle(vertices)), new Point(0,90), 0, 1.5, new Scalar(255, 0, 0));
+
+      for (int j = 0; j < 4; j++) {
+        Imgproc.putText(rgbaFrame, "Line" + j + ": " + getLineLength(vertices[j],vertices[(j + 1) % 4] ), new Point(0,135 + (j*45)), 0, 1.5, new Scalar(255, 0, 0));
+        Imgproc.putText(rgbaFrame, Integer.toString(j) ,vertices[j], 0, 3, new Scalar(255, 255, 255));
+        if (j == lineIndex)
+          Imgproc.line(rgbaFrame, vertices[j], vertices[(j + 1) % 4], new Scalar(0, 0, 255), 10);
+        else
+          Imgproc.line(rgbaFrame, vertices[j], vertices[(j + 1) % 4], new Scalar(255, 0, 0), 5);
+      }
+    }
+
+    //draw all large enough contours
+    Imgproc.drawContours (rgbaFrame, mContours, -1, new Scalar(120,255,100), 5);
+
+    //print out area of largest contour for finding size filter
+    Imgproc.putText(rgbaFrame, "Area: " + String.valueOf(maxArea), new Point(0, 30), 0, 0.5, new Scalar(255, 0, 0));
+
+    return rgbaFrame;
+  }
+
+  public double findAngle(Point [] corners){
+    maxLength = 0;
+    for (int i = 0; i < 4; i++){
+      //TODO: reimplement after completing getLineLength
+      deltaX = (corners[i].x - corners[(i+1) % 4].x);
+      deltaY = (corners[i].y - corners[(i+1) % 4].y);
+      lineLength = Math.sqrt((deltaX*deltaX) + (deltaY*deltaY));
+      if (lineLength > maxLength){ //goes by longest line
+
+        //if (getLineLength(corners[i],corners[(i+1) % 4] ) > maxLength){ //goes by longest line
+        maxLength = lineLength;
+        //maxLength = getLineLength(corners[i],corners[(i+1) % 4]);
+        longestX = deltaX;
+        longestY = deltaY;
+        lineIndex = i;
+      }
+    }
+    return  Math.atan(longestX/longestY)*180/Math.PI;
+  }
+  //TODO: temp method for printing out line length
+  // Go back to commented in findAngle to continue calculating angle value
+  public double getLineLength (Point pt1, Point pt2){
+    deltaX = Math.abs(pt1.x - pt2.x);
+    deltaY = Math.abs(pt1.y - pt2.y);
+    lineLength = Math.sqrt((deltaX*deltaX) + (deltaY*deltaY));
+    return lineLength;
   }
 
   protected class RobotRestarter implements Restarter {
@@ -328,6 +435,11 @@ public class FtcRobotControllerActivity extends Activity implements CameraBridge
       switch (status) {
         case LoaderCallbackInterface.SUCCESS: {
           cameraView.enableView();
+          mPyrDownMat = new Mat();
+          mHsvMat = new Mat();
+          mMask = new Mat();
+          mDilatedMask = new Mat();
+          mHierarchy = new Mat();
         }
         break;
         default: {
