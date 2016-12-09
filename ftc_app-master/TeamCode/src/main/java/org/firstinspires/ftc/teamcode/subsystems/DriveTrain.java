@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Constants;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
-import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
+import static org.firstinspires.ftc.teamcode.opmodes.Passthroughs.*;
 
 public class DriveTrain extends Subsystem{
     //motors
@@ -115,7 +111,7 @@ public class DriveTrain extends Subsystem{
     }
 
     public double ticksToInches(double ticks) {
-        return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION;
+        return ticks*Constants.WHEEL_DIAMETER*Math.PI/Constants.TICKS_PER_ROTATION/Constants.GEAR_RATIO;
     }
 
     public double ticksToDegrees(double ticks) {
@@ -123,7 +119,7 @@ public class DriveTrain extends Subsystem{
     }
 
     public double inchesToTicks(double inches) {
-        return inches*Constants.TICKS_PER_ROTATION/Constants.WHEEL_DIAMETER/Math.PI;
+        return inches*Constants.TICKS_PER_ROTATION/Constants.WHEEL_DIAMETER/Math.PI*Constants.GEAR_RATIO;
     }
 
     public double degreesToTicks(double degrees) {
@@ -131,11 +127,11 @@ public class DriveTrain extends Subsystem{
     }
 
     public double getRightEncoderValue(){
-        return (rightFront.getCurrentPosition()+rightBack.getCurrentPosition())/2D;
+        return (Math.abs(rightFront.getCurrentPosition())+Math.abs(rightBack.getCurrentPosition()))/2D;
     }
 
     public double getLeftEncoderValue(){
-        return (leftFront.getCurrentPosition()+leftBack.getCurrentPosition())/2D;
+        return (Math.abs(leftFront.getCurrentPosition())+Math.abs(leftBack.getCurrentPosition()))/2D;
     }
 
     public double getAverageEncoderValue(){
@@ -261,17 +257,21 @@ public class DriveTrain extends Subsystem{
     public void turn(double degrees, double power, boolean right){
         double direction = right ? -1 : 1;
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        resetGyro();
+        try {
+            Thread.sleep(1000);
+            resetGyro();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        runLeft(direction * -power);
+        runRight(direction * power);
         while(true) {
             telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
             telemetry.update();
-            if (Math.abs(getAngle())>degrees) {
+            if (Math.abs(getAngle())>degrees || !opModeIsActive()) {
                 runLeft(0);
                 runRight(0);
                 break;
-            } else {
-                runLeft(direction * -power);
-                runRight(direction * power);
             }
         }
             setPower(0);
@@ -315,16 +315,16 @@ public class DriveTrain extends Subsystem{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if (right) runLeft(power);
+        else runRight(power);
         while(true){
-            if (Math.abs(getAngle())>degrees) {
+            if (Math.abs(getAngle())>degrees || !opModeIsActive()) {
                 runLeft(0);
                 runRight(0);
                 break;
             }
             telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
             telemetry.update();
-            if (right) runLeft(power);
-            else runRight(power);
         }
         setPower(0);
     }

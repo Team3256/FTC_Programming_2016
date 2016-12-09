@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Robot;
 
 @Autonomous(name = "AutoRedBeacons")
@@ -14,33 +12,39 @@ public class AutoRedBeacons extends LinearOpMode{
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TelemetryHolder.telemetry = telemetry;
+        Passthroughs.telemetry = telemetry;
+        Passthroughs.opMode = this;
         robot.autonomousInit(hardwareMap);
         while(!robot.gyroIsReady()){
             telemetry.addData("gyro ready", "no");
             telemetry.addData("redval", robot.getRed());
             telemetry.update();
         }
-        telemetry.addData("gyro ready", robot.getAngle());
+        super.telemetry.addData("gyro ready", robot.getAngle());
 
-        telemetry.addData("color sens", robot.getRed());
-        telemetry.addData("ods", robot.getOds());
-        telemetry.update();
+        super.telemetry.addData("color sens", robot.getRed());
+        super.telemetry.addData("ods", robot.getOds());
+        super.telemetry.update();
         //wait for play button
         super.waitForStart();
         //one wheel turn towards beacon
-        robot.shooter.autoShootSequence();
-        robot.driveTrain.oneWheelTurn(30,0.45,false);
+        //robot.shooter.autoShootSequence();
+        robot.driveTrain.oneWheelTurn(35,0.44,false);
+        sleep(300);
+        robot.driveTrain.driveToDistance(35, 0.45, true);
         //drive to white line
-        robot.driveTrain.driveToLine(60, 0.48);
+        robot.driveTrain.driveToLine(30, 0.4);
+        //robot.driveTrain.driveToDistance(1,-0.44,true);
+        sleep(1000);
         //turn to the beacon
-        robot.driveTrain.oneWheelTurn(30, 0.45, false);
+        robot.driveTrain.turn(39, 0.44, false);
+        /*robot.driveTrain.driveToDistance(3,0.45,true);
+        sleep(1000);
         //set servo position depending on what color we see
-        //robot.beacon.updateServoPositionRed();
+        robot.beacon.updateServoPositionRed();
         //hit beacon
-        //robot.driveTrain.driveToDistance(8, 0.48, true);
+        robot.driveTrain.driveToDistance(4, 0.4, true);*/
         /*
-
         //drive backward so we can turn towards second beacon
         robot.driveTrain.driveToDistance(6, 0.5, false);
         //reset servo positions to neutral for both

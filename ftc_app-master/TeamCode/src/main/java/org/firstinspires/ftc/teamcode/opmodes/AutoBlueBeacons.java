@@ -13,7 +13,7 @@ public class AutoBlueBeacons extends LinearOpMode{
     
     @Override
     public void runOpMode() throws InterruptedException {
-        TelemetryHolder.telemetry = telemetry;
+        Passthroughs.telemetry = telemetry;
         robot.autonomousInit(hardwareMap);
         while(!robot.gyroIsReady()){
             telemetry.addData("gyro ready", "no");

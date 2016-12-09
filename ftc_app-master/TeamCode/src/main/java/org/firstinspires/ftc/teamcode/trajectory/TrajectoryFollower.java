@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
-import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
+import static org.firstinspires.ftc.teamcode.opmodes.Passthroughs.telemetry;
 public class TrajectoryFollower{
 	
 	private double kP, kI, kD, kV, kA, dt;

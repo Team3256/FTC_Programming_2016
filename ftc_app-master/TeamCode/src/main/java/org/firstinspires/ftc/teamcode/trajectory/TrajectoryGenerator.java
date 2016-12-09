@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.trajectory;
-import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
+import static org.firstinspires.ftc.teamcode.opmodes.Passthroughs.telemetry;
 public class TrajectoryGenerator{
 	
 	double max_vel;

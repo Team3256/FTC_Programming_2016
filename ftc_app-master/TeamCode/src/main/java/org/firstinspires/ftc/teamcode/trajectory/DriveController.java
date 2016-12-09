@@ -6,11 +6,7 @@ import android.os.Looper;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.base.Constants;
-import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by Team 2891 on 11/30/2016.

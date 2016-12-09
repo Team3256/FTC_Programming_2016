@@ -4,11 +4,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
-import org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder;
 
-import static org.firstinspires.ftc.teamcode.opmodes.TelemetryHolder.telemetry;
+import static org.firstinspires.ftc.teamcode.opmodes.Passthroughs.telemetry;
 
 public class Beacon extends Subsystem{
     private Servo leftDonger, rightDonger;

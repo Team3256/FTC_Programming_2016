@@ -90,6 +90,7 @@ public class TestTeleop extends LinearOpMode{
             telemetry.addData("ods", robot.getOds());
             telemetry.addData("blue", robot.isBlue());
             telemetry.addData("blue val", robot.getBlue());
+            telemetry.addData("red val", robot.getRed());
 
 
             telemetry.addData("angle", robot.getAngle());

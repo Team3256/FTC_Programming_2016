@@ -11,7 +11,7 @@ public class AutoShootClose extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TelemetryHolder.telemetry = telemetry;
+        Passthroughs.telemetry = telemetry;
         robot.autonomousInit(hardwareMap);
 
         /*while(!robot.gyroIsReady()){
