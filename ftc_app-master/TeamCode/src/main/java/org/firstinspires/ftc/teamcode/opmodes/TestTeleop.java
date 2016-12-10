@@ -84,6 +84,7 @@ public class TestTeleop extends LinearOpMode{
                 robot.shooter.runFly(fly_speed);
             }
             else robot.shooter.stopFly();*/
+
             telemetry.addData("servo", robot.shooter.getDongerLordPos());
             telemetry.addData("speed", robot.shooter.getPower());
 

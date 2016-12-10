@@ -43,7 +43,7 @@ public class Beacon extends Subsystem{
         else if (right)
             leftPos -= 0.03;
         else leftPos = leftDonger.getPosition();
-        leftPos = Range.clip(rightPos, 0, 1);
+        leftPos = Range.clip(leftPos, 0, 1);
         leftDonger.setPosition(leftPos);
     }
 
@@ -66,15 +66,15 @@ public class Beacon extends Subsystem{
     }
 
     public void setLeftBangPos() {
-        leftDonger.setPosition(0.66);
+        leftDonger.setPosition(0.63);
     }
 
     public void setRightBangPos() {
-        rightDonger.setPosition(0.33);
+        rightDonger.setPosition(0.63);
     }
 
     public void setLeftNeutralPos() {
-        leftDonger.setPosition(0);
+        leftDonger.setPosition(0.2);
     }
 
     public void setRightNeutralPos() {

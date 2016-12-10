@@ -22,13 +22,13 @@ public class AutoShootFar extends LinearOpMode {
         telemetry.update();*/
 
         super.waitForStart();
-
+/*
         sleep(5 * 1000);
         robot.driveTrain.driveToDistance(16, 0.8,true);
         robot.shooter.autoShootSequence();
         sleep(1000);
         robot.driveTrain.driveToDistance(45,0.7,true);
         robot.driveTrain.driveToDistance(5,0.8,false);
-        robot.driveTrain.driveToDistance(5,0.8,true);
+        robot.driveTrain.driveToDistance(5,0.8,true);*/
     }
 }

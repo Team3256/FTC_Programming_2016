@@ -24,12 +24,13 @@ public class AutoShootClose extends LinearOpMode {
         super.waitForStart();
 
         //sleep(15 * 1000);
+        /*
         robot.driveTrain.driveToDistance(6, 0.8,true);
         robot.shooter.autoShootSequence();
         sleep(1000);
         robot.driveTrain.driveToDistance(40,0.7,true);
         robot.driveTrain.driveToDistance(5,0.8,false);
-        robot.driveTrain.driveToDistance(12,0.8,true);
+        robot.driveTrain.driveToDistance(12,0.8,true);*/
         /*
         robot.driveTrain.turn(80,0.23, true);
         sleep(1000);

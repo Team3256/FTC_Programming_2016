@@ -28,16 +28,25 @@ public class AutoRedBeacons extends LinearOpMode{
         //wait for play button
         super.waitForStart();
         //one wheel turn towards beacon
-        //robot.shooter.autoShootSequence();
-        robot.driveTrain.oneWheelTurn(35,0.44,false);
+        robot.shooter.autoShootSequence();
         sleep(300);
-        robot.driveTrain.driveToDistance(35, 0.45, true);
+        robot.driveTrain.driveToDistance(6, 0.5, true,100000);
+        robot.driveTrain.turn(37, 1, true, 1);
+        robot.driveTrain.driveToDistance(35, 0.45, true,10000);
         //drive to white line
-        robot.driveTrain.driveToLine(30, 0.4);
+        robot.driveTrain.driveToLine(30, 0.4,5000);
+        robot.driveTrain.turn(30, 1, true, 1);
+        robot.driveTrain.driveToDistance(6, 0.6, true,3000);
+        robot.driveTrain.driveToDistance(6,0.5,false,3000);
+        robot.beacon.updateServoPositionRed();
+        robot.driveTrain.driveToDistance(6,0.6,true,3000);
+        while (opModeIsActive()){
+
+        }
         //robot.driveTrain.driveToDistance(1,-0.44,true);
-        sleep(1000);
+        //sleep(1000);
         //turn to the beacon
-        robot.driveTrain.turn(39, 0.44, false);
+        //robot.driveTrain.turn(39, 0.44, false,1);
         /*robot.driveTrain.driveToDistance(3,0.45,true);
         sleep(1000);
         //set servo position depending on what color we see

@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.base.Constants;
+import org.firstinspires.ftc.teamcode.base.PIDController;
 import org.firstinspires.ftc.teamcode.base.Subsystem;
+import org.firstinspires.ftc.teamcode.opmodes.Passthroughs;
 
 import static org.firstinspires.ftc.teamcode.opmodes.Passthroughs.*;
 
@@ -14,10 +16,10 @@ public class DriveTrain extends Subsystem{
     public DcMotor leftFront, leftBack, rightFront, rightBack;
     //singleton
     private static DriveTrain driveTrain = new DriveTrain();
-
+    public PIDController pidController;
     private DriveTrain() {
-
     }
+    double PID;
 
     public void init(HardwareMap hardwareMap){
         //initialize the motors
@@ -177,7 +179,7 @@ public class DriveTrain extends Subsystem{
         rightBack.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void driveToDistance(double inches, double power, boolean forward){
+    public void driveToDistance(double inches, double power, boolean forward, double timeout){
         if (!forward){
             flipDirection();
         }
@@ -185,7 +187,11 @@ public class DriveTrain extends Subsystem{
         resetEncoders();
         setTargetPos((int) inchesToTicks(inches));
         setPower(power);
+        double currtime = System.currentTimeMillis();
         while(isBusy()){
+            if (!Passthroughs.opModeIsActive() || System.currentTimeMillis()-currtime>timeout){
+                break;
+            }
             if (inchesToTicks(inches)<=Math.abs(getAverageEncoderValue())) break;
             telemetry.addData("distance", ticksToInches(Math.abs(getAverageEncoderValue())));
             telemetry.addData("angle", getAngle());
@@ -208,12 +214,16 @@ public class DriveTrain extends Subsystem{
         setPower(0);
     }
 
-    public void driveToLine(double safety_inches, double power){
+    public void driveToLine(double safety_inches, double power, double timeout){
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
         resetEncoders();
         setTargetPos((int) inchesToTicks(safety_inches));
         setPower(power);
+        double inittime = System.currentTimeMillis();
         while(isBusy()){
+            if (!Passthroughs.opModeIsActive()|| System.currentTimeMillis()-inittime>timeout){
+                break;
+            }
             telemetry.addData("driving to line", "");
             if (getOds()>=0.5){
                 break;
@@ -254,21 +264,36 @@ public class DriveTrain extends Subsystem{
         }
     }
 
-    public void turn(double degrees, double power, boolean right){
+    public void turn(double degrees, double power, boolean right, double factor){
         double direction = right ? -1 : 1;
+        pidController = new PIDController(0.001,0,0.0);
         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        resetGyro();
         try {
             Thread.sleep(1000);
-            resetGyro();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        /*
         runLeft(direction * -power);
         runRight(direction * power);
+        */
         while(true) {
+            if (!Passthroughs.opModeIsActive()){
+                break;
+            }
+            PID = pidController.calculatePID(Math.abs(getAngle()), degrees);
+            if (PID < 0.45 && PID > 0)
+                PID = 0.45;
+            else if (PID > -0.45 && PID < 0)
+                PID = -0.45;
+            telemetry.addData("output",PID);
             telemetry.addData("degrees", Math.abs(sensorBase.getAngle()));
             telemetry.update();
-            if (Math.abs(getAngle())>degrees || !opModeIsActive()) {
+            runLeft(PID * direction);
+            runRight(-PID * direction);
+            //if (Math.abs(getAngle())>= degrees * factor || !opModeIsActive()) {
+            if (pidController.getError(Math.abs(getAngle()), degrees) <= 2){
                 runLeft(0);
                 runRight(0);
                 break;
